@@ -10,22 +10,22 @@
         <div class="form-items">
             <form action="{% url 'register' %}" method="POST" name="RegisterForm">
                 {% csrf_token %}
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerFirstName }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerLastName }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerUsername }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerEmail }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerPassword }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.registerConfPassword }}
                 </div>
                 {% if message %}

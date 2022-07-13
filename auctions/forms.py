@@ -68,8 +68,8 @@ class RegisterForm(forms.Form):
 class ListingForm(forms.Form):
     listingTitle = forms.CharField(
         widget=forms.TextInput(attrs={
-            'class': 'form-group',
-            'placeholder': 'Title',
+            'id':'listingTitle',
+            'class': 'form-control',
             'autofocus':'',
         }),
         max_length=100,
@@ -77,8 +77,8 @@ class ListingForm(forms.Form):
 
     listingContent = forms.CharField(
         widget=forms.Textarea(attrs={
-            'class': 'form-group',
-            'placeholder': 'Content',
+            'id':'listingContent',
+            'class': 'form-control',
             'rows': '3',
             'columns': '200',
         }),
@@ -86,7 +86,7 @@ class ListingForm(forms.Form):
 
     listingPrice = forms.DecimalField(
         widget=forms.NumberInput(attrs={
-            'class': 'form-group',
+            'class': 'form-control',
         }),
         max_digits=5,
         decimal_places=2,
@@ -94,26 +94,26 @@ class ListingForm(forms.Form):
 
     listingStock = forms.IntegerField(
         widget=forms.NumberInput(attrs={
-            'class': 'form-group',
+            'class': 'form-control',
         }),
     )
 
     listingStatus = forms.ChoiceField(
         widget=forms.Select(attrs={
-            'class': 'form-group',
+            'class': 'form-control',
         }),
         choices=LISTING_STATUS,
     )
 
     listingStartDate = forms.DateField(
         widget=forms.SelectDateWidget(attrs={
-            'class': 'form-group',
+            'class': 'form-control',
         }),
     )
 
     listingEndDate = forms.DateField(
         widget=forms.SelectDateWidget(attrs={
-            'class': 'form-group',
+            'class': 'form-control',
         }),
     )
 

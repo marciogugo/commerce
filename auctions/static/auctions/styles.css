@@ -164,3 +164,11 @@ nav {
     text-align: left;
     transition: all 0.4s ease;
 }
+
+
+
+/* -------------------------------------- */
+
+.form-label {
+    align-items: center;
+}
