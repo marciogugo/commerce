@@ -1,3 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
+
 body {
     padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;    
+}
+
+.div-header {
+    display: flex;
+}
+
+.div-h1 {
+    width: 10%;
+}
+
+.div-menu {
+    width: 90%;
+}
+
+.div-user .div-user-logged {
+    width: 10%;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+}
+
+.header {
+    justify-content: space-between;
+    background-color: #6666f1;   
+    --background-image: linear-gradient(to top left, #000d65,#6666f1);
+    --border-bottom: 2px solid #000;
+    padding: 10px 20px;
+}
+
+.h1-header {
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.h2-header {
+    font-weight: bold;
+    font-size: x-large;
+    height: 30px;
+}
+
+nav {
+    justify-content: right;
+    color: white;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    margin-right: 30px;
+}
+
+.nav-link:hover {
+    color: red;
+    transition-property: color 1s;
+} 
+
+.nav-watch {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    margin-right: 30px;
+}
+
+.nav-user {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    --text-decoration: none;
+    --margin-right: 30px;
+    --width: 50px;
+}
+
+.nav-user-logged {
+    display: inline-flex;
+    font-style: italic;
+    margin-left: 10px;
+}    
+
+.nav-watch::after {
+    align-items: baseline;
+    font-size: 10px;
+    color: black;
+    content:"10";
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    padding-left:2px;
+    padding-top:2px;
+    background-color: red;
+}
+
+.error-message {
+    height: 20px;
+    color: red;
+}
+
+.form-group .form-button {
+    width: 300px;
+    align-items: center;
+}
+
+.form-register {
+    margin-top: 20px;
+    align-content: center;
+}
+
+.a-title {
+    width: 150px;
+    margin-right: 10px;
+}
+
+.form-button {
+    text-align: center;
+}
+
+.form-holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 10vh;
+}
+
+.form-holder .form-listings {
+    text-align: left;
+}
+
+.form-holder .form-content {
+    position: relative;
+    text-align: center;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-content .form-items {
+    border: 3px solid #325AB4;
+    padding: 40px;
+    display: inline-block;
+    width: 100%;
+    min-width: 540px;
+    border-radius: 10px;
+    text-align: left;
+    transition: all 0.4s ease;
 }

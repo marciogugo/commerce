@@ -1,0 +1,37 @@
+{% extends 'auctions/layout.html' %}
+
+<title>{% block title %}Auctions - Listings{% endblock title %}</title>
+
+{% block body %}
+<div class="form-listing">
+    <h2 class="h2-header">Create new listing</h2>
+
+    <form action="{% url 'create_listing' %}" method="POST" name="ListingForm">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.listingTitle }}
+        </div>
+        <div class="form-group">
+            {{ form.listingContent }}
+        </div>
+        <div class="form-group">
+            {{ form.listingPrice }}
+        </div>
+        <div class="form-group">
+            {{ form.listingStock }}
+        </div>
+        <div class="form-group">
+            {{ form.listingStatus }}
+        </div>
+        <div class="form-group">
+            {{ form.listingStartDate }}
+        </div>
+        <div class="form-group">
+            {{ form.listingEndDate }}
+        </div>
+        <div class="form-group">
+            {{ form.listingImage }}
+        </div>
+    </form>
+</div>
+{% endblock body %}
