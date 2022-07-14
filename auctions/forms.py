@@ -71,7 +71,7 @@ class ListingForm(forms.Form):
     listingTitle = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
-            'autofocus':'',
+            'autofocus':'False',
         }),
         max_length=100,
     )
@@ -129,4 +129,10 @@ class ListingForm(forms.Form):
     )
 
     listingImage = forms.ImageField(
+        widget=forms.FileInput(attrs={
+            'id':'formFile',
+            'class':'form-control',
+            'type': 'file',
+            'onchange':'preview()',
+        })
     )

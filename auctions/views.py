@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing
 from .forms import ListingForm, RegisterForm
 
 
@@ -88,16 +88,71 @@ def register(request):
 
     return render(request, "auctions/register.html", context=context)
 
-@login_required
-def watchlist(request):
-    pass
 
 @login_required
 def create_listing(request):
     form = ListingForm()
 
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+
+        if not form.is_valid():
+            return render(request, "auctions/listings.html", {
+                "message": "Fill out all the requested fields."
+            })
+        else:
+            listing_title = request.POST['listingTitle']
+            listing_content = request.POST['listingContent']
+            listing_price = request.POST["listingPrice"]
+            listing_stock = request.POST["listingStock"]
+            listing_status = request.POST["listingStatus"]
+            listing_startDate = request.POST["listingStartDate"]
+            listing_endDate = request.POST["listingEndDate"]
+            listing_image = request.POST["listingImage"]
+
+            # if password != confirmation:
+            #     context = {
+            #         'form': form,
+            #         'message':'Passwords must match.',
+            #     }
+            #     return render(request, "auctions/register.html", context)
+
+            # Attempt to create new user
+            try:
+                listing = Listing()
+                listing.listing_title = listing_title
+                listing.listing_content = listing_content
+                listing.listing_price = listing_price
+                listing.listing_stock = listing_stock
+                listing.listing_status = listing_status
+                listing_startDate = listing_startDate
+                listing_endDate = listing_endDate
+                listing_image = listing_image
+                listing.save()
+            except IntegrityError:
+                context = {
+                    'form': form,
+                    'message': 'Error while saving listing.',
+                }
+                return render(request, "auctions/register.html", context)
+
     context= {
         'form': form
     }
-    
+
     return render(request, "auctions/listings.html", context=context)
+
+
+def all_listings(request):
+    context= {
+    }
+
+    return render(request, "auctions/index.html", context=context)
+
+
+@login_required
+def watchlist(request):
+    context= {
+    }
+
+    return render(request, "auctions/index.html", context=context)
