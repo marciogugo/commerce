@@ -1,5 +1,7 @@
+from datetime import date
 from attr import attrs
 from django import forms
+from django.conf import settings
 
 LISTING_STATUS = [
     ('A', 'Available'),
@@ -68,8 +70,7 @@ class RegisterForm(forms.Form):
 class ListingForm(forms.Form):
     listingTitle = forms.CharField(
         widget=forms.TextInput(attrs={
-            'id':'listingTitle',
-            'class': 'form-control',
+            'class': 'form-control form-control-sm',
             'autofocus':'',
         }),
         max_length=100,
@@ -77,16 +78,15 @@ class ListingForm(forms.Form):
 
     listingContent = forms.CharField(
         widget=forms.Textarea(attrs={
-            'id':'listingContent',
-            'class': 'form-control',
+            'class': 'form-control form-control-sm',
             'rows': '3',
-            'columns': '200',
+            'columns': '100',
         }),
     )
 
     listingPrice = forms.DecimalField(
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control form-control-sm',
         }),
         max_digits=5,
         decimal_places=2,
@@ -94,29 +94,39 @@ class ListingForm(forms.Form):
 
     listingStock = forms.IntegerField(
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control form-control-sm',
         }),
     )
 
     listingStatus = forms.ChoiceField(
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select form-select-sm',
         }),
         choices=LISTING_STATUS,
     )
 
     listingStartDate = forms.DateField(
-        widget=forms.SelectDateWidget(attrs={
-            'class': 'form-control',
-        }),
+        widget=forms.DateInput(attrs={
+            'placeholder':'%m/%d/%Y',
+            'type':'text', #type date in html5 does not support placeholder attribute
+            'onfocus': "(this.type='date')",
+            'class': 'form-control dateinput form-control-sm',
+        },
+        format='%m/%d/%Y',),
+        input_formats=settings.DATE_INPUT_FORMATS,
+        initial=date.today,
     )
 
     listingEndDate = forms.DateField(
-        widget=forms.SelectDateWidget(attrs={
-            'class': 'form-control',
-        }),
+        widget=forms.DateInput(attrs={
+            'placeholder':'mm/dd/yyyy',
+            'type':'text', #type date in html5 does not support placeholder attribute
+            'onfocus': "(this.type='date')",
+            'class': 'form-control form-control-sm',
+        },
+        format='%m-%d-%Y',),
+        initial=date.today
     )
 
     listingImage = forms.ImageField(
-        
     )

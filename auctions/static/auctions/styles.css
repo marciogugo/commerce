@@ -81,7 +81,7 @@ nav {
     color: white;
     font-size: 20px;
     font-weight: 500;
-    --text-decoration: none;
+    text-decoration: none;
     --margin-right: 30px;
     --width: 50px;
 }
@@ -89,6 +89,7 @@ nav {
 .nav-user-logged {
     display: inline-flex;
     font-style: italic;
+    color: black;
     margin-left: 10px;
 }    
 

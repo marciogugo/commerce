@@ -11,37 +11,43 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="mb-3">
+                    <label for="formFile" class="col-sm2 col-form-label col-form-label-sm">Image</label>
                     {{ form.listingImage }}
+                    <img class="fit-picture" src="">
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="mb-3" width="200hv">
-                    <label for="listingTitle" class="form-label">Title</label>
-                    {{ form.listingTitle }}
-                </div>
                 <div class="mb-3">
-                    <label for="listingContent" class="form-label">Content</label>
-                    {{ form.listingContent }}
-                </div>
-                <div class="mb-3">
-                    <label for="listingPrice" class="form-label">Price</label>
-                    {{ form.listingPrice }}
-                </div>
-                <div class="mb-3">
-                    <label for="listingStock" class="form-label">Stock</label>
-                    {{ form.listingStock }}
-                </div>
-                <div class="mb-3">
-                    <label for="listingStatus" class="form-label">Status</label>
-                    {{ form.listingStatus }}
-                </div>
-                <div class="mb-3">
-                    <label for="listingStartDate" class="form-label">Starting date</label>
-                    {{ form.listingStartDate }}
-                </div>
-                <div class="mb-3">
-                    <label for="listingEndDate" class="form-label">Ending date</label>
-                    {{ form.listingEndDate }}
+                    <label for="listingTitle" class="col-sm2 col-form-label col-form-label-sm">Title</label>
+                    <div class="col-sm-10">
+                        {{ form.listingTitle }}
+                    </div>
+                    <label for="listingContent" class="col-sm2 col-form-label col-form-label-sm">Content</label>
+                    <div class="col-sm-10">
+                        {{ form.listingContent }}
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="col-sm-10">
+                            <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Price</label>
+                            {{ form.listingPrice }}
+                        </div>
+                        <div class="col-sm-10">
+                            <label for="listingStock" class="col-sm2 col-form-label col-form-label-sm">Stock</label>
+                            {{ form.listingStock }}
+                        </div>
+                    </div>
+                    <label for="listingStatus" class="col-sm2 col-form-label col-form-label-sm">Status</label>
+                    <div class="col-sm-10">
+                        {{ form.listingStatus }}
+                    </div>
+                    <label for="listingStartDate" class="col-sm2 col-form-label col-form-label-sm">Starting date</label>
+                    <div class="col-sm-10">
+                        {{ form.listingStartDate }}
+                    </div>
+                    <label for="listingEndDate" class="col-sm2 col-form-label col-form-label-sm">Ending date</label>
+                    <div class="col-sm-10">
+                        {{ form.listingEndDate }}
+                    </div>
                 </div>
             </div>
         </div>

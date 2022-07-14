@@ -1,3 +1,4 @@
+from datetime import date
 from unicodedata import category
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -18,8 +19,8 @@ class Listing(models.Model):
     listing_stock = models.IntegerField
     listing_status = models.CharField(max_length=1, choices = LISTING_STATUS)
     listing_image_url = models.URLField
-    listing_start_date = models.DateField
-    listing_end_date = models.DateField
+    listing_start_date = models.DateField.default = date.today
+    listing_end_date = models.DateField.default = date.today
     def __str__(self):
         return f"Title: {self.listing_title} Price: {self.listing_price} Status: {self.listing_status}"
 
@@ -44,8 +45,8 @@ class Bid(models.Model):
     product = models.ForeignKey(Listing, on_delete=models.CASCADE)
     bid_starting_value = models.DecimalField
     bid_current_value = models.DecimalField
-    bid_start_date_time = models.DateTimeField
-    bid_finish_date_time = models.DateTimeField
+    bid_start_date_time = models.DateTimeField.default = date.today
+    bid_finish_date_time = models.DateTimeField.default = date.today
     def __str__(self):
         return f"Product: {models.product.listing.content} Starting Bid: {self.bid_starting_value} Status: {self.bid_current_value}"
 
