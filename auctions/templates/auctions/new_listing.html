@@ -15,7 +15,8 @@
     function clearImage() {
         image_uploaded = false;
         document.getElementById('formFile').value = null;
-        document.getElementById("buttonID").style.display=image_uploaded?"":"none";
+        document.getElementById('buttonID').style.display=image_uploaded?"":"none";
+        document.getElementById('formFile').blur();
         frame.src = "";
     }
 </script>
@@ -31,8 +32,11 @@
                     <label for="formFile" class="col-sm2 col-form-label col-form-label-sm">Image</label>
                     {{ form.listingImage }}
                 </div>
-                <img id="frame" src="" class="img-fluid"/>
-                <button onclick="clearImage()" id="buttonID" class="btn btn-primary mt-3" >Reset image</button>
+                <div class="mb-3">
+                    <img id="frame" src="" class="img-fluid"/>
+                    <br>
+                    <button onclick="clearImage()" id="buttonID" class="btn btn-primary mt-3" >Reset image</button>
+                </div>
                 <script>
                     document.getElementById("buttonID").style.display=image_uploaded?"":"none";
                 </script>
@@ -69,7 +73,13 @@
                     <div class="col-sm-10">
                         {{ form.listingEndDate }}
                     </div>
-                    <button type="submit"   id="buttonSubmit" class="btn btn-primary mt-3" >Save</button>
+                    <input class="btn btn-primary mt-3" type="submit" id="buttonSubmit" value="Save">
+                    {% comment %} <button type="submit" id="buttonSubmit" class="btn btn-primary mt-3" >Save</button> {% endcomment %}
+                    {% if message %}
+                    <div class="error-message">{{ message }}</div>
+                    {% else %}
+                    <div class="error-message"></div>
+                    {% endif %}
                 </div>
             </div>
         </div>

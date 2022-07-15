@@ -94,13 +94,15 @@ def create_listing(request):
     form = ListingForm()
 
     if request.method == "POST":
-        form = RegisterForm(request.POST)
+        form = ListingForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "auctions/listings.html", {
+            print("form is invalid:", form.errors)
+            return render(request, "auctions/new_listing.html", {
                 "message": "Fill out all the requested fields."
             })
         else:
+            print('fomr is valid')
             listing_title = request.POST['listingTitle']
             listing_content = request.POST['listingContent']
             listing_price = request.POST["listingPrice"]
@@ -109,6 +111,8 @@ def create_listing(request):
             listing_startDate = request.POST["listingStartDate"]
             listing_endDate = request.POST["listingEndDate"]
             listing_image = request.POST["listingImage"]
+
+            print("Request: ", request.POST)
 
             # if password != confirmation:
             #     context = {
@@ -128,19 +132,27 @@ def create_listing(request):
                 listing_startDate = listing_startDate
                 listing_endDate = listing_endDate
                 listing_image = listing_image
+
+                print("Listing: ", listing)
+
                 listing.save()
             except IntegrityError:
                 context = {
                     'form': form,
                     'message': 'Error while saving listing.',
                 }
-                return render(request, "auctions/register.html", context)
+                return render(request, "auctions/new_listing.html", context)
+            return HttpResponseRedirect(reverse("all_listings"))
+
+    print('aqui fora ')
 
     context= {
         'form': form
     }
 
-    return render(request, "auctions/listings.html", context=context)
+    print("contexto ", context)
+
+    return render(request, "auctions/new_listing.html", context=context)
 
 
 def all_listings(request):

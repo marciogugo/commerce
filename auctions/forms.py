@@ -71,9 +71,10 @@ class ListingForm(forms.Form):
     listingTitle = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
-            'autofocus':'False',
+            'autofocus':'',
         }),
         max_length=100,
+        required=False,
     )
 
     listingContent = forms.CharField(
@@ -82,6 +83,7 @@ class ListingForm(forms.Form):
             'rows': '3',
             'columns': '100',
         }),
+        required=False,
     )
 
     listingPrice = forms.DecimalField(
@@ -90,12 +92,14 @@ class ListingForm(forms.Form):
         }),
         max_digits=5,
         decimal_places=2,
+        required=False,
     )
 
     listingStock = forms.IntegerField(
         widget=forms.NumberInput(attrs={
             'class': 'form-control form-control-sm',
         }),
+        required=False,
     )
 
     listingStatus = forms.ChoiceField(
@@ -103,6 +107,7 @@ class ListingForm(forms.Form):
             'class': 'form-select form-select-sm',
         }),
         choices=LISTING_STATUS,
+        required=False,
     )
 
     listingStartDate = forms.DateField(
@@ -111,10 +116,11 @@ class ListingForm(forms.Form):
             'type':'text', #type date in html5 does not support placeholder attribute
             'onfocus': "(this.type='date')",
             'class': 'form-control dateinput form-control-sm',
-        },
-        format='%m/%d/%Y',),
-        input_formats=settings.DATE_INPUT_FORMATS,
-        initial=date.today,
+        }),
+        # format='%m/%d/%Y',),
+        # input_formats=settings.DATE_INPUT_FORMATS,
+        # initial=date.today,
+        required=False,
     )
 
     listingEndDate = forms.DateField(
@@ -123,9 +129,10 @@ class ListingForm(forms.Form):
             'type':'text', #type date in html5 does not support placeholder attribute
             'onfocus': "(this.type='date')",
             'class': 'form-control form-control-sm',
-        },
-        format='%m-%d-%Y',),
-        initial=date.today
+        }),
+        # format='%m-%d-%Y',),
+        # initial=date.today,
+        required=False,
     )
 
     listingImage = forms.ImageField(
@@ -134,5 +141,7 @@ class ListingForm(forms.Form):
             'class':'form-control',
             'type': 'file',
             'onchange':'preview()',
-        })
+            'required':'false',
+        }),
+        required=False,
     )
