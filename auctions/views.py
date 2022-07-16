@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+#from django.utils import format
 
 from .models import User, Listing
 from .forms import ListingForm, RegisterForm
@@ -94,32 +95,24 @@ def create_listing(request):
     form = ListingForm()
 
     if request.method == "POST":
-        form = ListingForm(request.POST)
+        form = ListingForm(request.POST, request.FILES)
 
         if not form.is_valid():
-            print("form is invalid:", form.errors)
             return render(request, "auctions/new_listing.html", {
                 "message": "Fill out all the requested fields."
             })
         else:
-            print('fomr is valid')
             listing_title = request.POST['listingTitle']
             listing_content = request.POST['listingContent']
             listing_price = request.POST["listingPrice"]
             listing_stock = request.POST["listingStock"]
             listing_status = request.POST["listingStatus"]
-            listing_startDate = request.POST["listingStartDate"]
-            listing_endDate = request.POST["listingEndDate"]
-            listing_image = request.POST["listingImage"]
+            listing_image_url = request.POST["listingImageURL"]
+            listing_image_file = request.FILES["listingImageFile"]
+            listing_startDate = format.get_format(request.POST["listingStartDate"],'DATETIME_FORMAT')
+            listing_endDate = format.get_format(request.POST["listingEndDate"],'DATETIME_FORMAT')
 
             print("Request: ", request.POST)
-
-            # if password != confirmation:
-            #     context = {
-            #         'form': form,
-            #         'message':'Passwords must match.',
-            #     }
-            #     return render(request, "auctions/register.html", context)
 
             # Attempt to create new user
             try:
@@ -129,9 +122,12 @@ def create_listing(request):
                 listing.listing_price = listing_price
                 listing.listing_stock = listing_stock
                 listing.listing_status = listing_status
-                listing_startDate = listing_startDate
-                listing_endDate = listing_endDate
-                listing_image = listing_image
+                listing.listing_start_date = listing_startDate
+                listing.listing_end_date = listing_endDate
+                listing.listing_image_url = listing_image_url
+                listing.listing_image_file = listing_image_file
+
+                #frame.src = '{{MEDIA_URL}}{{form.listingImageFile}}';
 
                 print("Listing: ", listing)
 

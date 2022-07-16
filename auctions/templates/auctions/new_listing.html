@@ -7,8 +7,15 @@
     let image_uploaded = false;
 
     function preview() {
+        alert("entrou preview")
         image_uploaded = true;
         frame.src = URL.createObjectURL(event.target.files[0]);
+
+        request.session['listingImageURL'] = frame.scr
+        alert("dentro script",request.session['listingImageURL'])
+        request.session['listingImageFile'] = event.target.files[0]
+
+
         document.getElementById("buttonID").style.display=image_uploaded?"":"none";
     }    
     
@@ -16,7 +23,6 @@
         image_uploaded = false;
         document.getElementById('formFile').value = null;
         document.getElementById('buttonID').style.display=image_uploaded?"":"none";
-        document.getElementById('formFile').blur();
         frame.src = "";
     }
 </script>
@@ -30,7 +36,7 @@
             <div class="col-sm-4">
                 <div class="mb-3">
                     <label for="formFile" class="col-sm2 col-form-label col-form-label-sm">Image</label>
-                    {{ form.listingImage }}
+                    {{ form.listingImageFile }}
                 </div>
                 <div class="mb-3">
                     <img id="frame" src="" class="img-fluid"/>

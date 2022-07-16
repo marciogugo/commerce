@@ -90,7 +90,7 @@ class ListingForm(forms.Form):
         widget=forms.NumberInput(attrs={
             'class': 'form-control form-control-sm',
         }),
-        max_digits=5,
+        max_digits=10,
         decimal_places=2,
         required=False,
     )
@@ -112,30 +112,40 @@ class ListingForm(forms.Form):
 
     listingStartDate = forms.DateField(
         widget=forms.DateInput(attrs={
-            'placeholder':'%m/%d/%Y',
+            'placeholder':'dd/mm/yyyy',
             'type':'text', #type date in html5 does not support placeholder attribute
             'onfocus': "(this.type='date')",
             'class': 'form-control dateinput form-control-sm',
         }),
-        # format='%m/%d/%Y',),
-        # input_formats=settings.DATE_INPUT_FORMATS,
-        # initial=date.today,
+        #format='%m/%d/%Y',
+        input_formats=settings.DATE_INPUT_FORMATS,
+        initial=date.today,
         required=False,
     )
 
     listingEndDate = forms.DateField(
         widget=forms.DateInput(attrs={
-            'placeholder':'mm/dd/yyyy',
+            'placeholder':'dd/mm/yyyy',
             'type':'text', #type date in html5 does not support placeholder attribute
             'onfocus': "(this.type='date')",
             'class': 'form-control form-control-sm',
         }),
-        # format='%m-%d-%Y',),
-        # initial=date.today,
+        #format='%d-%m-%Y',
+        input_formats=settings.DATE_INPUT_FORMATS,
+        initial=date.today,
         required=False,
     )
 
-    listingImage = forms.ImageField(
+    listingImageURL = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control form-control-sm',
+            'autofocus':'',
+        }),
+        max_length=500,
+        required=False,
+    )
+
+    listingImageFile = forms.ImageField(
         widget=forms.FileInput(attrs={
             'id':'formFile',
             'class':'form-control',

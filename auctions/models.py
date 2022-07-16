@@ -18,7 +18,8 @@ class Listing(models.Model):
     listing_price = models.DecimalField
     listing_stock = models.IntegerField
     listing_status = models.CharField(max_length=1, choices = LISTING_STATUS)
-    listing_image_url = models.URLField
+    listing_image_url = models.CharField(max_length=500),
+    listing_image_file = models.FileField(upload_to='media/', null=True, verbose_name="")
     listing_start_date = models.DateField.default = date.today
     listing_end_date = models.DateField.default = date.today
     def __str__(self):
@@ -56,3 +57,10 @@ class Comments(models.Model):
     comment_content = models.CharField(max_length=500)
     def __str__(self):
         return f"Product: {models.product.listing.title} Comment: {self.comment_content}"
+
+# class Image(models.Model):
+#     name = models.CharField(max_length=500),
+#     imageFile = models.FileField(upload_to='media/', null=True, verbose_name="")
+
+#     def __str__(self):
+#         return self.name + ": " + str(self.imagefile)
