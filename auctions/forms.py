@@ -155,3 +155,40 @@ class ListingForm(forms.Form):
         }),
         required=False,
     )
+
+class AuctionForm(forms.Form):
+    auctionTitle = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control form-control-sm',
+            'autofocus':'',
+        }),
+        max_length=100,
+        required=False,
+    )
+
+    auctionContent = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
+        }),
+        required=False,
+    )
+
+    auctionPrice = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control form-control-sm',
+        }),
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+    )
+
+    auctionBid = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control form-control-sm',
+        }),
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+    )

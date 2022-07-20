@@ -20,9 +20,9 @@
                 </div>
                 <div class="div-menu">
                     <nav class="nav">
-                        <a class="nav-link" href="{% url 'all_listings' %}">Active Listings</a>
+                        <a class="nav-link" href="{% url 'listings' %}">Active Listings</a>
                         {% if user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
+                        <a class="nav-link" href="{% url 'new_listing' %}">Create Listing</a>
                         {% endif %}
                         <a class="nav-link" href="{% url 'index' %}">Categories</a>
                         {% if user.is_authenticated %}

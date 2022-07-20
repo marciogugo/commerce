@@ -30,7 +30,7 @@
 <div class="form-listing">
     <h2 class="h2-header">Create new listing</h2>
 
-    <form action="{% url 'create_listing' %}" method="POST" name="ListingForm">
+    <form action="{% url 'new_listing' %}" method="POST" name="ListingForm">
         {% csrf_token %}
         <div class="row">
             <div class="col-sm-4">

@@ -4,10 +4,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-#from django.utils import format
 
-from .models import User, Listing
-from .forms import ListingForm, RegisterForm
+from .models import User, Listing, Bid
+from .forms import ListingForm, RegisterForm, AuctionForm
 
 
 def index(request):
@@ -91,7 +90,7 @@ def register(request):
 
 
 @login_required
-def create_listing(request):
+def new_listing(request):
     form = ListingForm()
 
     if request.method == "POST":
@@ -114,7 +113,7 @@ def create_listing(request):
 
             print("Request: ", request.POST)
 
-            # Attempt to create new user
+            # Attempt to create new listing
             try:
                 listing = Listing()
                 listing.listing_title = listing_title
@@ -138,7 +137,7 @@ def create_listing(request):
                     'message': 'Error while saving listing.',
                 }
                 return render(request, "auctions/new_listing.html", context)
-            return HttpResponseRedirect(reverse("all_listings"))
+            return HttpResponseRedirect(reverse("listings"))
 
     print('aqui fora ')
 
@@ -151,11 +150,17 @@ def create_listing(request):
     return render(request, "auctions/new_listing.html", context=context)
 
 
-def all_listings(request):
+def listings(request):
+    form = AuctionForm()
+
+    listings = Listing.objects.all()
+
     context= {
+        'form': form,
+        'listings': listings,
     }
 
-    return render(request, "auctions/index.html", context=context)
+    return render(request, "auctions/listings.html", context=context)
 
 
 @login_required

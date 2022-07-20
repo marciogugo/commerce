@@ -21,58 +21,47 @@
 </script>
 
 <div class="form-listing">
-    <h2 class="h2-header">Create new listing</h2>
+    <h2 class="h2-header">Active Listings</h2>
 
-    <form action="{% url 'all_listings' %}" method="POST" name="ListingForm">
+    <form action="{% url 'listings' %}" method="POST" name="AuctionForm">
         {% csrf_token %}
+        {% for listing in listings %}
         <div class="row">
             <div class="col-sm-4">
                 <div class="mb-3">
                     <label for="formFile" class="col-sm2 col-form-label col-form-label-sm">Image</label>
-                    {{ form.listingImage }}
+                    {{ listing.listing_image }}
                 </div>
-                <img id="frame" src="" class="img-fluid"/>
-                <button onclick="clearImage()" id="buttonID" class="btn btn-primary mt-3" >Reset image</button>
-                <script>
-                    document.getElementById("buttonID").style.display=image_uploaded?"":"none";
-                </script>
             </div>
             <div class="col-sm-4">
                 <div class="mb-3">
-                    <label for="listingTitle" class="col-sm2 col-form-label col-form-label-sm">Title</label>
+                    <label for="auctionTitle" class="col-sm2 col-form-label col-form-label-sm">Title</label>
                     <div class="col-sm-10">
-                        {{ form.listingTitle }}
+                        {{ listing.listing_title }}
                     </div>
-                    <label for="listingContent" class="col-sm2 col-form-label col-form-label-sm">Content</label>
+                    <label for="auctionContent" class="col-sm2 col-form-label col-form-label-sm">Content</label>
                     <div class="col-sm-10">
-                        {{ form.listingContent }}
+                        {{ listing.listing_content }}
                     </div>
                     <div class="col-md-auto">
                         <div class="col-sm-10">
-                            <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Price</label>
-                            {{ form.listingPrice }}
+                            <label for="auctionPrice" class="col-sm2 col-form-label col-form-label-sm">Price</label>
+                            {{ listing.listing_price }}
                         </div>
+                    </div>
+                    <div class="col-md-auto">
                         <div class="col-sm-10">
-                            <label for="listingStock" class="col-sm2 col-form-label col-form-label-sm">Stock</label>
-                            {{ form.listingStock }}
+                            <label for="auctionBid" class="col-sm2 col-form-label col-form-label-sm">Bid</label>
+                            {{ listing.listing_bid }}
                         </div>
                     </div>
-                    <label for="listingStatus" class="col-sm2 col-form-label col-form-label-sm">Status</label>
-                    <div class="col-sm-10">
-                        {{ form.listingStatus }}
-                    </div>
-                    <label for="listingStartDate" class="col-sm2 col-form-label col-form-label-sm">Starting date</label>
-                    <div class="col-sm-10">
-                        {{ form.listingStartDate }}
-                    </div>
-                    <label for="listingEndDate" class="col-sm2 col-form-label col-form-label-sm">Ending date</label>
-                    <div class="col-sm-10">
-                        {{ form.listingEndDate }}
-                    </div>
-                    <button type="submit"   id="buttonSubmit" class="btn btn-primary mt-3" >Save</button>
+                    <button type="submit" id="buttonSubmit" class="btn btn-primary mt-3" >Place Bid</button>
                 </div>
             </div>
         </div>
+        {% empty %}
+        <div class="error-message">Sorry, no active listings found.</div>
+        {% endfor %}
     </form>
 </div>
 {% endblock body %}
