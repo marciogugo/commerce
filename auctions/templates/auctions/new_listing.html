@@ -4,17 +4,14 @@
 
 {% block body %}
 <script>
+    sessionStorage.setItem('listingImageFile','')
     let image_uploaded = false;
 
     function preview() {
-        alert("entrou preview")
         image_uploaded = true;
         frame.src = URL.createObjectURL(event.target.files[0]);
 
-        request.session['listingImageURL'] = frame.scr
-        alert("dentro script",request.session['listingImageURL'])
-        request.session['listingImageFile'] = event.target.files[0]
-
+        sessionStorage.setItem('listingImageFile', event.target.files[0])
 
         document.getElementById("buttonID").style.display=image_uploaded?"":"none";
     }    
@@ -30,7 +27,7 @@
 <div class="form-listing">
     <h2 class="h2-header">Create new listing</h2>
 
-    <form action="{% url 'new_listing' %}" method="POST" name="ListingForm">
+    <form action="{% url 'new_listing' %}" method="POST" name="ListingForm" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-sm-4">
@@ -80,7 +77,6 @@
                         {{ form.listingEndDate }}
                     </div>
                     <input class="btn btn-primary mt-3" type="submit" id="buttonSubmit" value="Save">
-                    {% comment %} <button type="submit" id="buttonSubmit" class="btn btn-primary mt-3" >Save</button> {% endcomment %}
                     {% if message %}
                     <div class="error-message">{{ message }}</div>
                     {% else %}

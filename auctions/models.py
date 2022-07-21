@@ -14,14 +14,13 @@ class Listing(models.Model):
         ('S', 'Sold out')
     ]
     listing_title = models.CharField(max_length=100)
-    listing_content = models.TextField
-    listing_price = models.DecimalField
-    listing_stock = models.IntegerField
+    listing_content = models.TextField(max_length=300)
+    listing_price = models.DecimalField(max_digits=8, decimal_places=2, default = 0)
+    listing_stock = models.IntegerField(default = 0)
     listing_status = models.CharField(max_length=1, choices = LISTING_STATUS)
-    listing_image_url = models.CharField(max_length=500),
-    listing_image_file = models.FileField(upload_to='media/', null=True, verbose_name="")
-    listing_start_date = models.DateField.default = date.today
-    listing_end_date = models.DateField.default = date.today
+    listing_image_file = models.ImageField(upload_to='media/', null=True, verbose_name="")
+    listing_start_date = models.DateField(default = date.today())
+    listing_end_date = models.DateField(default = date.today())
     def __str__(self):
         return f"Title: {self.listing_title} Price: {self.listing_price} Status: {self.listing_status}"
 
@@ -44,10 +43,10 @@ class Watchlist(models.Model):
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    bid_starting_value = models.DecimalField
-    bid_current_value = models.DecimalField
-    bid_start_date_time = models.DateTimeField.default = date.today
-    bid_finish_date_time = models.DateTimeField.default = date.today
+    bid_starting_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
+    bid_current_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
+    bid_start_date_time = models.DateTimeField(default = date.today())
+    bid_finish_date_time = models.DateTimeField(default = date.today())
     def __str__(self):
         return f"Product: {models.product.listing.content} Starting Bid: {self.bid_starting_value} Status: {self.bid_current_value}"
 
@@ -57,10 +56,3 @@ class Comments(models.Model):
     comment_content = models.CharField(max_length=500)
     def __str__(self):
         return f"Product: {models.product.listing.title} Comment: {self.comment_content}"
-
-# class Image(models.Model):
-#     name = models.CharField(max_length=500),
-#     imageFile = models.FileField(upload_to='media/', null=True, verbose_name="")
-
-#     def __str__(self):
-#         return self.name + ": " + str(self.imagefile)

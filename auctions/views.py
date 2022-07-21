@@ -106,12 +106,9 @@ def new_listing(request):
             listing_price = request.POST["listingPrice"]
             listing_stock = request.POST["listingStock"]
             listing_status = request.POST["listingStatus"]
-            listing_image_url = request.POST["listingImageURL"]
             listing_image_file = request.FILES["listingImageFile"]
-            listing_startDate = format.get_format(request.POST["listingStartDate"],'DATETIME_FORMAT')
-            listing_endDate = format.get_format(request.POST["listingEndDate"],'DATETIME_FORMAT')
-
-            print("Request: ", request.POST)
+            listing_startDate = request.POST["listingStartDate"]
+            listing_endDate = request.POST["listingEndDate"]
 
             # Attempt to create new listing
             try:
@@ -123,29 +120,19 @@ def new_listing(request):
                 listing.listing_status = listing_status
                 listing.listing_start_date = listing_startDate
                 listing.listing_end_date = listing_endDate
-                listing.listing_image_url = listing_image_url
                 listing.listing_image_file = listing_image_file
-
-                #frame.src = '{{MEDIA_URL}}{{form.listingImageFile}}';
-
-                print("Listing: ", listing)
-
                 listing.save()
             except IntegrityError:
                 context = {
                     'form': form,
                     'message': 'Error while saving listing.',
                 }
-                return render(request, "auctions/new_listing.html", context)
+                return render(request, "auctions/new_listing.html", context=context)
             return HttpResponseRedirect(reverse("listings"))
-
-    print('aqui fora ')
 
     context= {
         'form': form
     }
-
-    print("contexto ", context)
 
     return render(request, "auctions/new_listing.html", context=context)
 

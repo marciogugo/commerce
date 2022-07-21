@@ -136,17 +136,8 @@ class ListingForm(forms.Form):
         required=False,
     )
 
-    listingImageURL = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'class': 'form-control form-control-sm',
-            'autofocus':'',
-        }),
-        max_length=500,
-        required=False,
-    )
-
     listingImageFile = forms.ImageField(
-        widget=forms.FileInput(attrs={
+        widget=forms.ClearableFileInput(attrs={
             'id':'formFile',
             'class':'form-control',
             'type': 'file',
@@ -190,5 +181,15 @@ class AuctionForm(forms.Form):
         }),
         max_digits=10,
         decimal_places=2,
+        required=False,
+    )
+
+    auctionImageFile = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={
+            'id':'formFile',
+            'class':'form-control',
+            'type': 'file',
+            'required':'false',
+        }),
         required=False,
     )
