@@ -95,47 +95,6 @@ class ListingForm(forms.Form):
         required=False,
     )
 
-    listingStock = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control form-control-sm',
-        }),
-        required=False,
-    )
-
-    listingStatus = forms.ChoiceField(
-        widget=forms.Select(attrs={
-            'class': 'form-select form-select-sm',
-        }),
-        choices=LISTING_STATUS,
-        required=False,
-    )
-
-    listingStartDate = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'placeholder':'dd/mm/yyyy',
-            'type':'text', #type date in html5 does not support placeholder attribute
-            'onfocus': "(this.type='date')",
-            'class': 'form-control dateinput form-control-sm',
-        }),
-        #format='%m/%d/%Y',
-        input_formats=settings.DATE_INPUT_FORMATS,
-        initial=date.today,
-        required=False,
-    )
-
-    listingEndDate = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'placeholder':'dd/mm/yyyy',
-            'type':'text', #type date in html5 does not support placeholder attribute
-            'onfocus': "(this.type='date')",
-            'class': 'form-control form-control-sm',
-        }),
-        #format='%d-%m-%Y',
-        input_formats=settings.DATE_INPUT_FORMATS,
-        initial=date.today,
-        required=False,
-    )
-
     listingImageFile = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={
             'id':'formFile',
@@ -148,6 +107,12 @@ class ListingForm(forms.Form):
     )
 
 class AuctionForm(forms.Form):
+    auctionId = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'value':'', 
+        })
+    )
+
     auctionTitle = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',

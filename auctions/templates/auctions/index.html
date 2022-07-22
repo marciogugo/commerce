@@ -1,11 +1,50 @@
 {% extends "auctions/layout.html" %}
+{% load columns %}
+{% load static %}
 
 <title>{% block title %}Auctions - Listings{% endblock title %}</title>
 
 {% block body %}
 <div class="form-listings">
-    <h2 class="h2-header">Active Listings</h2>
+    <h2 class="h2-header">INDEX Active Listings</h2>
 
-    TODO
+    <form action="{% url 'listings' %}" method="POST" name="AuctionForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            {% for listing in listings|columns:3 %}
+            <div class="col-md-4">
+                {% for listing , bookmarks in listingsDict.items %}
+                    <p>{% if bookmarks.product_id == listings.listing_id %} encontrou {% endif %}<p>
+                {% endfor %}
+
+                {% for item in listing %}
+                    {% comment %} {% for bookmarks, value in listing.items() %}
+                        <p>true bookmarks<p>
+                    {% endfor %} {% endcomment %}
+
+                    <div class="item-watchlist">
+                        {% if item.fields.id in bookmarks.field.id %}
+                            <p>true<p>
+                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                        {% else %}
+                            <p>false<p>
+                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                        {% endif %}
+                    </div>
+                    <div class="item-images">
+                        <img class="item-image" src="{{ MEDIA_URL }}{{item.listing_image_file}}" width=300 height=300/>
+                    </div>
+                    <div class="item-title">{{ item.listing_title }}</div>
+                    <div class="item-price">US${{ item.listing_price }}</div>
+                    <div class="item-content">{{ item.listing_content }}</div>
+                    <button type="submit" id="buttonSubmit" class="btn btn-primary mt-3" >Place Bid</button>
+                    <hr>
+                {% endfor %}
+            </div><!-- /col-md-4 -->
+        {% empty %}
+            <div class="error-message">Sorry, no active listings found.</div>
+        {% endfor %}
+        </div><!-- /row -->
+    </form>
 </div>
 {% endblock body %}

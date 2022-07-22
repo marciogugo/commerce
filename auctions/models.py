@@ -1,4 +1,6 @@
-from datetime import date
+from datetime import datetime
+from enum import auto
+from time import timezone 
 from unicodedata import category
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -8,21 +10,13 @@ class User(AbstractUser):
         return f"First name: {self.first_name} Last name: {self.last_name} E-mail: {self.email}"
 
 class Listing(models.Model):
-    LISTING_STATUS = [
-        ('A', 'Available'),
-        ('U', 'Unavailable'),
-        ('S', 'Sold out')
-    ]
+    listing_id = models.AutoField(primary_key=True)
     listing_title = models.CharField(max_length=100)
     listing_content = models.TextField(max_length=300)
     listing_price = models.DecimalField(max_digits=8, decimal_places=2, default = 0)
-    listing_stock = models.IntegerField(default = 0)
-    listing_status = models.CharField(max_length=1, choices = LISTING_STATUS)
     listing_image_file = models.ImageField(upload_to='media/', null=True, verbose_name="")
-    listing_start_date = models.DateField(default = date.today())
-    listing_end_date = models.DateField(default = date.today())
     def __str__(self):
-        return f"Title: {self.listing_title} Price: {self.listing_price} Status: {self.listing_status}"
+        return f"Title: {self.listing_title} Price: {self.listing_price}"
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -45,8 +39,8 @@ class Bid(models.Model):
     product = models.ForeignKey(Listing, on_delete=models.CASCADE)
     bid_starting_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
     bid_current_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
-    bid_start_date_time = models.DateTimeField(default = date.today())
-    bid_finish_date_time = models.DateTimeField(default = date.today())
+    bid_start_date_time = models.DateTimeField(default = datetime.now)
+    bid_finish_date_time = models.DateTimeField(default = datetime.now)
     def __str__(self):
         return f"Product: {models.product.listing.content} Starting Bid: {self.bid_starting_value} Status: {self.bid_current_value}"
 

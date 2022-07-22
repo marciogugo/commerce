@@ -1,10 +1,10 @@
-from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.db.models import Prefetch
 
 from .models import User, Listing, Bid, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
@@ -102,25 +102,19 @@ def new_listing(request):
                 "message": "Fill out all the requested fields."
             })
         else:
+            listing_id =  request.POST['listingId']
             listing_title = request.POST['listingTitle']
             listing_content = request.POST['listingContent']
             listing_price = request.POST["listingPrice"]
-            listing_stock = request.POST["listingStock"]
-            listing_status = request.POST["listingStatus"]
             listing_image_file = request.FILES["listingImageFile"]
-            listing_startDate = request.POST["listingStartDate"]
-            listing_endDate = request.POST["listingEndDate"]
 
             # Attempt to create new listing
             try:
                 listing = Listing()
+                listing.listing_id = listing.pk
                 listing.listing_title = listing_title
                 listing.listing_content = listing_content
                 listing.listing_price = listing_price
-                listing.listing_stock = listing_stock
-                listing.listing_status = listing_status
-                listing.listing_start_date = listing_startDate
-                listing.listing_end_date = listing_endDate
                 listing.listing_image_file = listing_image_file
                 listing.save()
             except IntegrityError:
@@ -141,17 +135,28 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
-    listings = Listing.objects.all()
-    #listings = Listing.objects.values_list('listing_title','listing_content','listing_price','listing_image_file')
-    bookmark = False #Watchlist(product=Listing.objects.get(id))
+    listings = Listing.objects.values()
+    #bookmarks = Watchlist.objects.values().prefetch_related('product')
+    bookmarks = Watchlist.objects.values()
+
+    #print(listings)
+    #print(bookmarks)
+
+    listingsDict = {
+        'listings': listings,
+        'bookmarks': bookmarks,
+    }
+
+    print(listingsDict)
 
     context= {
         'form': form,
         'listings': listings,
-        'bookmarked': bookmark,
+        'listingsDict': listingsDict,
+        'bookmarks': bookmarks,
     }
 
-    return render(request, "auctions/listings.html", context=context)
+    return render(request, "auctions/index.html", context=context)
 
 
 @login_required
@@ -160,3 +165,6 @@ def watchlist(request):
     }
 
     return render(request, "auctions/index.html", context=context)
+
+
+
