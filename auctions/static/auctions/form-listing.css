@@ -1,0 +1,41 @@
+.form-listings {
+    inherits: false;
+    margin-left: 20px;
+}
+
+.h2-header {
+    font-weight: bold;
+    font-size: x-large;
+    height: 30px;
+    text-align: center;
+}
+
+.item-title {
+    margin-top: 20px;
+    height: 40px;
+    font-weight: bold;
+    font-size: large;
+}
+
+.item-content {
+    margin-top: 10px;
+    font-weight: normal;
+    font-size: normal;
+}
+
+.item-price {
+    font-weight: bold;
+    font-size: normal;
+}
+
+.item-watchlist {
+    margin-bottom: 10px;
+    font-size: 19px;
+    align-items: flex-end;
+}
+
+.item-image{
+    margin: auto;
+    display: flex;
+    border: 3px solid lightblue;
+}

@@ -6,7 +6,7 @@ body {
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;    
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .div-header {
@@ -31,8 +31,6 @@ body {
 .header {
     justify-content: space-between;
     background-color: #6666f1;   
-    --background-image: linear-gradient(to top left, #000d65,#6666f1);
-    --border-bottom: 2px solid #000;
     padding: 10px 20px;
 }
 

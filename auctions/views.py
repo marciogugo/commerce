@@ -1,3 +1,4 @@
+from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -5,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
 
 
@@ -141,10 +142,13 @@ def listings(request):
     form = AuctionForm()
 
     listings = Listing.objects.all()
+    #listings = Listing.objects.values_list('listing_title','listing_content','listing_price','listing_image_file')
+    bookmark = False #Watchlist(product=Listing.objects.get(id))
 
     context= {
         'form': form,
         'listings': listings,
+        'bookmarked': bookmark,
     }
 
     return render(request, "auctions/listings.html", context=context)
