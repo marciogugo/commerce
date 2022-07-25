@@ -13,27 +13,47 @@
         {% csrf_token %}
         <div class="row">
             {% for listing in listings|columns:3 %}
-            <div class="col-md-4">
+            <div class="col-md-4" >
                 {% for item in listing %}
                     <div class="item-watchlist">
                         {% if user.is_authenticated %}
-                            {% for bookmark in bookmarks %}
-                                {% if bookmark.product_id == item.listing_id and not is_bookmarked %}
-                                    {% update_variable True as is_bookmarked %}
-                                    {% comment %} <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                                {% else %}
-                                    {% update_variable False as is_bookmarked %}
-                                    <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button> {% endcomment %}
-                                {% endif %} 
-
-                                {% comment %} {% update_variable False as is_bookmarked %} {% endcomment %}
-                            {% endfor %}
-
-                            {% if is_bookmarked == True %}
-                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                            {% if item.is_bookmarked %}
+                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
                             {% else %}
-                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
                             {% endif %}
+
+                            {% comment %} {% for bookmark in bookmarks %}
+                                {{ bookmark.product_id }}
+
+                                {% if bookmark.product_id == item.listing_id%}
+                                    book
+                                    {% update_variable True as is_bookmarked %}
+                                    <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                                {% else %}
+
+                                {% endif %} {% endcomment %}
+
+                                {% comment %} {% ifchanged is_bookmarked %}
+                                    {%cycle '<button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>' 
+                                            '<button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>' %}
+                                {% endifchanged %}  {% endcomment %}
+
+                                {% comment %} <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark">
+                                </button> {% endcomment %}
+
+                            {% comment %} {% endfor %}
+
+                            {% ifchanged not is_bookmarked %} {% endcomment %}
+                                {% comment %} sim
+                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                            {% else %} {% endcomment %}
+                                {% comment %} nao
+                                {% update_variable False as is_bookmarked %}
+                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                            {% endifchanged %} {% endcomment %}
+
+
                         {% endif %}
                     </div>
 

@@ -15,6 +15,13 @@ class Listing(models.Model):
     listing_content = models.TextField(max_length=300)
     listing_price = models.DecimalField(max_digits=8, decimal_places=2, default = 0)
     listing_image_file = models.ImageField(upload_to='media/', null=True, verbose_name="")
+
+    @property
+    def is_bookmarked(self):
+        bookmarks = Watchlist.objects.values().filter(user_id=User.id)
+        print(bookmarks)
+        return Watchlist.object.filter(product=self.listing_id)
+
     def __str__(self):
         return f"Title: {self.listing_title} Price: {self.listing_price}"
 
