@@ -4,11 +4,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 
 from .models import User, Listing, Bid, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
-
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -25,6 +24,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
+            request.session['user_id'] = user.id
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {
@@ -135,24 +135,19 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
-    listings = Listing.objects.values()
-    #bookmarks = Watchlist.objects.values().prefetch_related('product')
-    bookmarks = Watchlist.objects.values()
+    print("usuario ", request.session['user_id'])
+    listings = Listing.objects.values() 
+    bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+    is_bookmarked = False
 
     #print(listings)
     #print(bookmarks)
-
-    listingsDict = {
-        'listings': listings,
-        'bookmarks': bookmarks,
-    }
-
-    print(listingsDict)
+    print(is_bookmarked)
 
     context= {
         'form': form,
         'listings': listings,
-        'listingsDict': listingsDict,
+        'is_bookmarked': is_bookmarked,
         'bookmarks': bookmarks,
     }
 
@@ -165,6 +160,4 @@ def watchlist(request):
     }
 
     return render(request, "auctions/index.html", context=context)
-
-
 

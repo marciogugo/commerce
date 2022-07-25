@@ -1,6 +1,7 @@
 {% extends "auctions/layout.html" %}
 {% load columns %}
 {% load static %}
+{% load templates %}
 
 <title>{% block title %}Auctions - Listings{% endblock title %}</title>
 
@@ -13,24 +14,29 @@
         <div class="row">
             {% for listing in listings|columns:3 %}
             <div class="col-md-4">
-                {% for listing , bookmarks in listingsDict.items %}
-                    <p>{% if bookmarks.product_id == listings.listing_id %} encontrou {% endif %}<p>
-                {% endfor %}
-
                 {% for item in listing %}
-                    {% comment %} {% for bookmarks, value in listing.items() %}
-                        <p>true bookmarks<p>
-                    {% endfor %} {% endcomment %}
-
                     <div class="item-watchlist">
-                        {% if item.fields.id in bookmarks.field.id %}
-                            <p>true<p>
+                        {% if user.is_authenticated %}
+                            {% for bookmark in bookmarks %}
+                                {% if bookmark.product_id == item.listing_id and not is_bookmarked %}
+                                    {% update_variable True as is_bookmarked %}
+                                    {% comment %} <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                                {% else %}
+                                    {% update_variable False as is_bookmarked %}
+                                    <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button> {% endcomment %}
+                                {% endif %} 
+
+                                {% comment %} {% update_variable False as is_bookmarked %} {% endcomment %}
+                            {% endfor %}
+
+                            {% if is_bookmarked == True %}
                             <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                        {% else %}
-                            <p>false<p>
+                            {% else %}
                             <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                            {% endif %}
                         {% endif %}
                     </div>
+
                     <div class="item-images">
                         <img class="item-image" src="{{ MEDIA_URL }}{{item.listing_image_file}}" width=300 height=300/>
                     </div>
