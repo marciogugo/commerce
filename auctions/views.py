@@ -1,3 +1,4 @@
+from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -135,19 +136,13 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
-    print("usuario ", request.session['user_id'])
-    listings = Listing.objects.values() 
+    listings = Listing.objects.values()
     bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
-    is_bookmarked = False
-
-    #print(listings)
-    #print(bookmarks)
-    print(is_bookmarked)
+    listings = Listing.objects.values()
 
     context= {
         'form': form,
         'listings': listings,
-        'is_bookmarked': is_bookmarked,
         'bookmarks': bookmarks,
     }
 
