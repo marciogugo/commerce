@@ -26,7 +26,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             request.session['user_id'] = user.id
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("listings"))
         else:
             return render(request, "auctions/login.html", {
                 "message": "Invalid username and/or password."
@@ -37,7 +37,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("listings"))
 
 
 def register(request):
@@ -137,17 +137,20 @@ def listings(request):
     form = AuctionForm()
 
     listings = Listing.objects.values()
-    bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
-    listings = Listing.objects.values()
+
+    if 'user_id' in request.session:
+        bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+    else:
+        bookmarks = Watchlist.objects.values()
 
     context= {
         'form': form,
         'listings': listings,
+        'is_bookmarked': False,
         'bookmarks': bookmarks,
     }
 
     return render(request, "auctions/index.html", context=context)
-
 
 @login_required
 def watchlist(request):

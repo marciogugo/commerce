@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class="form-listings">
-    <h2 class="h2-header">INDEX Active Listings</h2>
+    <h2 class="h2-header">Active Listings</h2>
 
     <form action="{% url 'listings' %}" method="POST" name="AuctionForm" enctype="multipart/form-data">
         {% csrf_token %}
@@ -17,43 +17,20 @@
                 {% for item in listing %}
                     <div class="item-watchlist">
                         {% if user.is_authenticated %}
-                            {% if item.is_bookmarked %}
-                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                            {% else %}
-                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
-                            {% endif %}
-
-                            {% comment %} {% for bookmark in bookmarks %}
-                                {{ bookmark.product_id }}
-
-                                {% if bookmark.product_id == item.listing_id%}
-                                    book
+                            {% update_variable False as is_bookmarked %}
+                            {% for bookmark in bookmarks %}
+                                {% if bookmark.product_id == item.listing_id %}
                                     {% update_variable True as is_bookmarked %}
-                                    <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                                {% else %}
+                                {% endif %}
 
-                                {% endif %} {% endcomment %}
-
-                                {% comment %} {% ifchanged is_bookmarked %}
-                                    {%cycle '<button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>' 
-                                            '<button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>' %}
-                                {% endifchanged %}  {% endcomment %}
-
-                                {% comment %} <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark">
-                                </button> {% endcomment %}
-
-                            {% comment %} {% endfor %}
-
-                            {% ifchanged not is_bookmarked %} {% endcomment %}
-                                {% comment %} sim
-                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                            {% else %} {% endcomment %}
-                                {% comment %} nao
-                                {% update_variable False as is_bookmarked %}
-                                <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
-                            {% endifchanged %} {% endcomment %}
-
-
+                                {% if forloop.last %}
+                                    {% if is_bookmarked %}
+                                        <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                                    {% else %}
+                                        <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
                     </div>
 
