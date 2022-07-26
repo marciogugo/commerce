@@ -25,11 +25,13 @@
 
                                 {% if forloop.last %}
                                     {% if is_bookmarked %}
-                                        <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
+                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "remove_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9829;</span></button>
                                     {% else %}
-                                        <button id ="button_watchlist" class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
                                     {% endif %}
                                 {% endif %}
+                            {% empty %}
+                                <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -48,6 +50,11 @@
             <div class="error-message">Sorry, no active listings found.</div>
         {% endfor %}
         </div><!-- /row -->
+        {% if message %}
+            <div class="error-message">{{ message }}</div>
+        {% else %}
+            <div class="error-message"></div>
+        {% endif %}
     </form>
 </div>
 {% endblock body %}

@@ -1,11 +1,9 @@
-from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.db.models import Prefetch, Q
 
 from .models import User, Listing, Bid, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
@@ -87,7 +85,6 @@ def register(request):
     context = {
         "form": form,
     }
-
     return render(request, "auctions/register.html", context=context)
 
 
@@ -129,7 +126,6 @@ def new_listing(request):
     context= {
         'form': form
     }
-
     return render(request, "auctions/new_listing.html", context=context)
 
 
@@ -156,6 +152,46 @@ def listings(request):
 def watchlist(request):
     context= {
     }
-
     return render(request, "auctions/index.html", context=context)
 
+
+@login_required
+def add_watchlist(request):
+    form = AuctionForm()
+
+    # Attempt to create new watchlist
+    try:
+        user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
+        listing = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
+
+        watchlist = Watchlist();
+        watchlist.user = user
+        watchlist.product = listing
+        watchlist.save()
+    except IntegrityError:
+        context = {
+            'form': form,
+            'message': 'Error while saving to watchlist.',
+        }
+        return render(request, "auctions/index.html", context=context)
+    return HttpResponseRedirect(reverse(listings))
+
+
+@login_required
+def remove_watchlist(request):
+    form = AuctionForm()
+
+    # Attempt to create remove from watchlist
+    try:
+        user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
+        listing = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
+
+        watchlist = Watchlist.objects.filter(user=user.id,product=listing.listing_id);
+        watchlist.delete()
+    except IntegrityError:
+        context = {
+            'form': form,
+            'message': 'Error while removing from watchlist.',
+        }
+        return render(request, "auctions/index.html", context=context)
+    return HttpResponseRedirect(reverse(listings))
