@@ -4,25 +4,3 @@
 *.pyc
 *.pyc
 *.pyc
-<<<<<<< HEAD
-<<<<<<< HEAD
-*.pyc
-*.pyc
-*.pyc
-=======
->>>>>>> 3e3f9826fb116c09a1f2c274dc493df6ab3f1f74
-auctions/__pycache__/__init__.cpython-310.pyc
-auctions/__pycache__/admin.cpython-310.pyc
-auctions/__pycache__/apps.cpython-310.pyc
-auctions/__pycache__/forms.cpython-310.pyc
-auctions/__pycache__/urls.cpython-310.pyc
-auctions/migrations/__pycache__/0001_initial.cpython-310.pyc
-auctions/migrations/__pycache__/0002_category_listing_watchlist_comments_bid_and_more.cpython-310.pyc
-auctions/migrations/__pycache__/__init__.cpython-310.pyc
-commerce/__pycache__/__init__.cpython-310.pyc
-commerce/__pycache__/settings.cpython-310.pyc
-commerce/__pycache__/urls.cpython-310.pyc
-commerce/__pycache__/wsgi.cpython-310.pyc
-*.pyc
-=======
->>>>>>> 3e3f9826fb116c09a1f2c274dc493df6ab3f1f74
