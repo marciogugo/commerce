@@ -1,27 +1,41 @@
-{% extends 'auctions/layout.html' %}
+{% extends "auctions/layout.html" %}
 {% load columns %}
 {% load static %}
+{% load templates %}
 
-<title>{% block title %}Auctions - Listings{% endblock title %}</title>
+<title>{% block title %}Watchlist - Listings{% endblock title %}</title>
 
 {% block body %}
 <div class="form-listings">
-    <h2 class="h2-header">LISTINGS Active Listings</h2>
+    <h2 class="h2-header">Watchlist</h2>
 
-    <form action="{% url 'listings' %}" method="POST" name="AuctionForm" enctype="multipart/form-data">
+    <form action="{% url 'watchlist' %}" method="POST" name="AuctionForm" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             {% for listing in listings|columns:3 %}
-            <div class="col-md-4">
+            <div class="col-md-4" >
                 {% for item in listing %}
                     <div class="item-watchlist">
-                        {% if item.id in bookmarks %}
-                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9829;</span></button>
-                        {% else %}
-                            <p>aqui<p>
-                            <button class="btn btn-outline-dark" name="add_bookmark"><span>&#9825;</span></button>
+                        {% if user.is_authenticated %}
+                            {% update_variable False as is_bookmarked %}
+                            {% for bookmark in bookmarks %}
+                                {% if bookmark.product_id == item.listing_id %}
+                                    {% update_variable True as is_bookmarked %}
+                                {% endif %}
+
+                                {% if forloop.last %}
+                                    {% if is_bookmarked %}
+                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "remove_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9829;</span></button>
+                                    {% else %}
+                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
+                                    {% endif %}
+                                {% endif %}
+                            {% empty %}
+                                <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
+                            {% endfor %}
                         {% endif %}
                     </div>
+
                     <div class="item-images">
                         <img class="item-image" src="{{ MEDIA_URL }}{{item.listing_image_file}}" width=300 height=300/>
                     </div>
@@ -32,10 +46,15 @@
                     <hr>
                 {% endfor %}
             </div><!-- /col-md-4 -->
-            {% empty %}
-            <div class="error-message">Sorry, no active listings found.</div>
-            {% endfor %}
+        {% empty %}
+            <div class="error-message">Sorry, no active watchlist found.</div>
+        {% endfor %}
         </div><!-- /row -->
+        {% if message %}
+            <div class="error-message">{{ message }}</div>
+        {% else %}
+            <div class="error-message"></div>
+        {% endif %}
     </form>
 </div>
 {% endblock body %}

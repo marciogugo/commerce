@@ -1,3 +1,4 @@
+from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -143,16 +144,26 @@ def listings(request):
         'form': form,
         'listings': listings,
         'is_bookmarked': False,
-        'bookmark_count': bookmarks.count,
         'bookmarks': bookmarks,
+        'bookmark_count': bookmarks.count,
     }
 
     return render(request, "auctions/index.html", context=context)
 
 @login_required
 def watchlist(request):
+    form = AuctionForm()
+
+    bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
+    listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))
+
     context= {
+        'form': form,
+        'listings': listings,
+        'bookmarks': bookmarks,
+        'bookmark_count': bookmarks.count,
     }
+
     return render(request, "auctions/index.html", context=context)
 
 
