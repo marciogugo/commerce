@@ -100,7 +100,7 @@ def new_listing(request):
                 "message": "Fill out all the requested fields."
             })
         else:
-            listing_id =  request.POST['listingId']
+            #listing_id =  request.POST['listingId']
             listing_title = request.POST['listingTitle']
             listing_content = request.POST['listingContent']
             listing_price = request.POST["listingPrice"]
@@ -143,6 +143,7 @@ def listings(request):
         'form': form,
         'listings': listings,
         'is_bookmarked': False,
+        'bookmark_count': bookmarks.count,
         'bookmarks': bookmarks,
     }
 

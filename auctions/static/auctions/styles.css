@@ -92,16 +92,18 @@ nav {
 }    
 
 .nav-watch::after {
-    align-items: baseline;
+    text-align: center;
     font-size: 10px;
     color: black;
-    content:"10";
+    content:attr(content);
     width: 15px;
     height: 15px;
     margin-left: 5px;
-    padding-left:2px;
-    padding-top:2px;
+    --margin-bottom: 2px;
+    --padding-left:2px;
+    --padding-top:2px;
     background-color: red;
+    border-radius: 5px;
 }
 
 .error-message {

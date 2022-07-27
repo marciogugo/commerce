@@ -13,6 +13,7 @@
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
         <link href="{% static 'auctions/form-listing.css' %}" rel="stylesheet">
     </head>
+
     <body>
         <header class="header">
             <div class="div-header">
@@ -27,8 +28,8 @@
                         {% endif %}
                         <a class="nav-link" href="{% url 'index' %}">Categories</a>
                         {% if user.is_authenticated %}
-                            {% if user.is_watching %}
-                                <a class="nav-watch" href="{% url 'watchlist' %}">Watchlist</a>
+                            {% if bookmark_count > 0 %}
+                                <a class="nav-link" href="{% url 'watchlist' %}">Watchlist<nav class="nav-watch" content="{{ bookmark_count }}"></nav></a>
                             {% else %}
                                 <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
                             {% endif %}
