@@ -6,11 +6,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .models import User, Listing, Bid, Watchlist
+from .models import Category, User, Listing, Bid, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return listings(request)
 
 
 def login_view(request):
@@ -36,7 +36,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("listings"))
+    return HttpResponseRedirect(reverse("index"))
 
 
 def register(request):
@@ -101,7 +101,7 @@ def new_listing(request):
                 "message": "Fill out all the requested fields."
             })
         else:
-            #listing_id =  request.POST['listingId']
+            listing_category = request.POST['listingCategory']
             listing_title = request.POST['listingTitle']
             listing_content = request.POST['listingContent']
             listing_price = request.POST["listingPrice"]
@@ -111,6 +111,7 @@ def new_listing(request):
             try:
                 listing = Listing()
                 listing.listing_id = listing.pk
+                listing.category_id = listing_category
                 listing.listing_title = listing_title
                 listing.listing_content = listing_content
                 listing.listing_price = listing_price
@@ -122,7 +123,7 @@ def new_listing(request):
                     'message': 'Error while saving listing.',
                 }
                 return render(request, "auctions/new_listing.html", context=context)
-            return HttpResponseRedirect(reverse("listings"))
+            return HttpResponseRedirect(reverse("index"))
 
     context= {
         'form': form
@@ -164,7 +165,7 @@ def watchlist(request):
         'bookmark_count': bookmarks.count,
     }
 
-    return render(request, "auctions/index.html", context=context)
+    return render(request, "auctions/watchlist.html", context=context)
 
 
 @login_required
@@ -186,7 +187,7 @@ def add_watchlist(request):
             'message': 'Error while saving to watchlist.',
         }
         return render(request, "auctions/index.html", context=context)
-    return HttpResponseRedirect(reverse(listings))
+    return HttpResponseRedirect(reverse("listings"))
 
 
 @login_required
@@ -206,4 +207,4 @@ def remove_watchlist(request):
             'message': 'Error while removing from watchlist.',
         }
         return render(request, "auctions/index.html", context=context)
-    return HttpResponseRedirect(reverse(listings))
+    return HttpResponseRedirect(reverse("listings"))

@@ -1,12 +1,33 @@
 from datetime import date
+import select
 from attr import attrs
 from django import forms
 from django.conf import settings
 
-LISTING_STATUS = [
-    ('A', 'Available'),
-    ('U', 'Unavailable'),
-    ('S', 'Sold out')
+CATEGORY_CHOICES = [
+    ('Electronics', (
+        ('CT', 'Computers & Tablets'),
+        ('CP', 'Cameras & Photo'),
+        ('HS', 'Home Surveillance Systems'),
+        ('GA', 'Gaming'),
+        ('CA', 'Cell Phones, Smart Watches & Accessories'),
+        ('TV', 'TV, Video & Home Audio Electronics'),
+        ),
+    ),
+    ('Fashion',(
+        ('MN', 'Men'),
+        ('WN', 'Women'),
+        ('KD', 'Kids'),
+        ),
+    ),
+    ('Sports',(
+        ('CY', 'Cycling'),
+        ('FI', 'Fitness, Running & Yoga'),
+        ('OS', 'Outdoor Sports'),
+        ('TG', 'Tactical & Duty Gear'),
+        ('WS', 'Water Sports'),
+        ),
+    ),
 ]
 
 class RegisterForm(forms.Form):
@@ -68,6 +89,12 @@ class RegisterForm(forms.Form):
 
 
 class ListingForm(forms.Form):
+    listingCategory = forms.ChoiceField(
+        choices = CATEGORY_CHOICES,
+        required=False,
+        ),
+    )
+
     listingTitle = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
@@ -111,6 +138,15 @@ class AuctionForm(forms.Form):
         widget=forms.NumberInput(attrs={
             'value':'', 
         })
+    )
+
+    auctionCategory = forms.ChoiceField(
+        # widget=forms.Select(attrs={
+        #     'class': 'form-control form-control-sm',
+        #     'autofocus':'',
+        # }),
+        choices = CATEGORY_CHOICES,
+        default= None,
     )
 
     auctionTitle = forms.CharField(

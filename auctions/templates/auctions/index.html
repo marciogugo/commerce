@@ -12,7 +12,7 @@
     <form action="{% url 'listings' %}" method="POST" name="AuctionForm" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
-            {% for listing in listings|columns:3 %}
+            {% for listing in listings|columns:4 %}
             <div class="col-md-4" >
                 {% for item in listing %}
                     <div class="item-watchlist">
@@ -39,6 +39,7 @@
                     <div class="item-images">
                         <img class="item-image" src="{{ MEDIA_URL }}{{item.listing_image_file}}" width=300 height=300/>
                     </div>
+                    <div class="item-category">{{ item.listing_category }}</div>
                     <div class="item-title">{{ item.listing_title }}</div>
                     <div class="item-price">US${{ item.listing_price }}</div>
                     <div class="item-content">{{ item.listing_content }}</div>
