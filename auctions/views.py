@@ -1,12 +1,13 @@
-from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .models import Category, User, Listing, Bid, Watchlist
+from auctions.choices import CATEGORY_CHOICES
+
+from .models import User, Listing, Watchlist
 from .forms import ListingForm, RegisterForm, AuctionForm
 
 def index(request):
@@ -88,7 +89,6 @@ def register(request):
     }
     return render(request, "auctions/register.html", context=context)
 
-
 @login_required
 def new_listing(request):
     form = ListingForm()
@@ -111,7 +111,7 @@ def new_listing(request):
             try:
                 listing = Listing()
                 listing.listing_id = listing.pk
-                listing.category_id = listing_category
+                listing.listing_category = listing_category
                 listing.listing_title = listing_title
                 listing.listing_content = listing_content
                 listing.listing_price = listing_price
@@ -144,6 +144,7 @@ def listings(request):
     context= {
         'form': form,
         'listings': listings,
+        'categories': CATEGORY_CHOICES,
         'is_bookmarked': False,
         'bookmarks': bookmarks,
         'bookmark_count': bookmarks.count,

@@ -3,32 +3,7 @@ import select
 from attr import attrs
 from django import forms
 from django.conf import settings
-
-CATEGORY_CHOICES = [
-    ('Electronics', (
-        ('CT', 'Computers & Tablets'),
-        ('CP', 'Cameras & Photo'),
-        ('HS', 'Home Surveillance Systems'),
-        ('GA', 'Gaming'),
-        ('CA', 'Cell Phones, Smart Watches & Accessories'),
-        ('TV', 'TV, Video & Home Audio Electronics'),
-        ),
-    ),
-    ('Fashion',(
-        ('MN', 'Men'),
-        ('WN', 'Women'),
-        ('KD', 'Kids'),
-        ),
-    ),
-    ('Sports',(
-        ('CY', 'Cycling'),
-        ('FI', 'Fitness, Running & Yoga'),
-        ('OS', 'Outdoor Sports'),
-        ('TG', 'Tactical & Duty Gear'),
-        ('WS', 'Water Sports'),
-        ),
-    ),
-]
+from .choices import CATEGORY_CHOICES
 
 class RegisterForm(forms.Form):
     registerFirstName = forms.CharField(
@@ -90,9 +65,9 @@ class RegisterForm(forms.Form):
 
 class ListingForm(forms.Form):
     listingCategory = forms.ChoiceField(
+        widget=forms.Select(),  
         choices = CATEGORY_CHOICES,
         required=False,
-        ),
     )
 
     listingTitle = forms.CharField(
@@ -137,16 +112,21 @@ class AuctionForm(forms.Form):
     auctionId = forms.IntegerField(
         widget=forms.NumberInput(attrs={
             'value':'', 
-        })
+        }),
     )
 
+    # auctionCategory = forms.ChoiceField(
+    #     widget=forms.Select(attrs={
+    #         'class': 'form-control form-control-sm',
+    #         'autofocus':'',
+    #     }),
+    #     choices = CATEGORY_CHOICES,
+    #     default= None,
+    # )
+
     auctionCategory = forms.ChoiceField(
-        # widget=forms.Select(attrs={
-        #     'class': 'form-control form-control-sm',
-        #     'autofocus':'',
-        # }),
         choices = CATEGORY_CHOICES,
-        default= None,
+        required=False,
     )
 
     auctionTitle = forms.CharField(

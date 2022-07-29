@@ -22,3 +22,12 @@ commerce/__pycache__/__init__.cpython-310.pyc
 commerce/__pycache__/settings.cpython-310.pyc
 *.pyc
 *.pyc
+auctions/__pycache__/__init__.cpython-310.pyc
+auctions/__pycache__/admin.cpython-310.pyc
+auctions/__pycache__/apps.cpython-310.pyc
+auctions/__pycache__/models.cpython-310.pyc
+auctions/__pycache__/urls.cpython-310.pyc
+auctions/__pycache__/views.cpython-310.pyc
+commerce/__pycache__/__init__.cpython-310.pyc
+commerce/__pycache__/settings.cpython-310.pyc
+commerce/__pycache__/urls.cpython-310.pyc
