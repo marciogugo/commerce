@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from auctions.choices import CATEGORY_CHOICES
 
-from .models import User, Listing, Watchlist
+from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, RegisterForm, AuctionForm
 
 def index(request):
@@ -134,12 +134,22 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
+    if request.method == 'POST':
+        print('post')
+        
     listings = Listing.objects.values()
 
     if 'user_id' in request.session:
         bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
     else:
         bookmarks = Watchlist.objects.values()
+
+    h_bid = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+
+    # if h_bid == None:
+    #     h_bid.starting_value = listings.values('listing_price')
+
+    # print("Maior:", h_bid)
 
     context= {
         'form': form,
@@ -148,6 +158,7 @@ def listings(request):
         'is_bookmarked': False,
         'bookmarks': bookmarks,
         'bookmark_count': bookmarks.count,
+        'highest_bid': h_bid,
     }
 
     return render(request, "auctions/index.html", context=context)
@@ -158,12 +169,16 @@ def watchlist(request):
 
     bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
     listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))
+    h_bid = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+
+    # print("Maior:", h_bid)
 
     context= {
         'form': form,
         'listings': listings,
         'bookmarks': bookmarks,
         'bookmark_count': bookmarks.count,
+        'highest_bid': h_bid,
     }
 
     return render(request, "auctions/watchlist.html", context=context)

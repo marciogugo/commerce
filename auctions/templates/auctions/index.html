@@ -6,6 +6,20 @@
 <title>{% block title %}Auctions - Listings{% endblock title %}</title>
 
 {% block body %}
+<script>
+    function placeBid() {
+        document.getElementById("buttonPlaceBid").style.display="none";
+        document.getElementById("divPlaceBid").style.display="";
+        alert("Place: " + document.getElementById("bidValue").value);
+    }
+
+    function submitBid() {
+        document.getElementById("buttonPlaceBid").style.display="none";
+        document.getElementById("divPlaceBid").style.display="";
+        alert("Save: " + document.getElementById("bidValue").value);
+    }
+</script>
+
 <div class="form-listings">
     <h2 class="h2-header">Active Listings</h2>
 
@@ -53,7 +67,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Price:</label>
+                        <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Starting Bid:</label>
                         US${{ item.listing_price }}
                     </div>
 
@@ -63,7 +77,20 @@
                     </div>
 
                     {% if user.is_authenticated %}
-                        <button type="submit" id="buttonSubmit" class="btn btn-primary mt-3" >Place Bid</button>
+                        <button type="button" id="buttonPlaceBid{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid();">Place Bid</button>
+
+                        <div class="input-group-sm" id="divPlaceBid{{ item.listing_id }}" style="display:none">
+                            <label for="listingBid" class="col-sm2 col-form-label col-form-label-sm">Your Bid:</label>
+                            {% if highest_bid.bid_current_value == None %}
+                                {{ highest_bid.bid_starting_value }}
+                                {% update_variable highest_bid.bid_starting_value as highest_bid.bid_current_value %}
+                            {% else %}
+                                {{ highest_bid.bid_current_value }}
+                            {% endif %}
+                            
+                            <input type="number" id="bidValue{{ item.listing_id }}" min="{{ highest_bid.current_value }}" step=".01" class="form-control" placeholder="Highest Bid">
+                            <button type="submit" id="buttonSubmit{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid();">Place Bid</button>
+                        </div>
                     {% endif %}
                     <hr>
                 {% endfor %}
