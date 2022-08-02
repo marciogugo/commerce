@@ -97,10 +97,21 @@ class ListingForm(forms.Form):
         required=False,
     )
 
+    listingBid = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control form-control-sm',
+        }),
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+    )
+
     listingImageFile = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={
             'id':'formFile',
             'class':'form-control',
+            # 'max-width':'50%',
+            # 'height':'50%',
             'type': 'file',
             'onchange':'preview()',
             'required':'false',

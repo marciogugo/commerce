@@ -144,12 +144,10 @@ def listings(request):
     else:
         bookmarks = Watchlist.objects.values()
 
-    h_bid = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+    h_bid = Bid.objects.values().filter(product__in = listings.values('listing_id'))
 
-    # if h_bid == None:
-    #     h_bid.starting_value = listings.values('listing_price')
-
-    # print("Maior:", h_bid)
+    print("Todos produtos", listings.values('listing_id') , ' Preço: ' , listings.values('listing_price'))
+    print("View: ", h_bid)
 
     context= {
         'form': form,
