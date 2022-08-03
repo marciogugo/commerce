@@ -97,14 +97,15 @@ class ListingForm(forms.Form):
         required=False,
     )
 
-    listingBid = forms.DecimalField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control form-control-sm',
-        }),
-        max_digits=10,
-        decimal_places=2,
-        required=False,
-    )
+    # listingBid = forms.DecimalField(
+    #     widget=forms.NumberInput(attrs={
+    #         'class': 'form-control form-control-sm',
+    #         'id':'bid_current_value',
+    #     }),
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     required=False,
+    # )
 
     listingImageFile = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={
@@ -167,14 +168,14 @@ class AuctionForm(forms.Form):
         required=False,
     )
 
-    auctionBid = forms.DecimalField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control form-control-sm',
-        }),
-        max_digits=10,
-        decimal_places=2,
-        required=False,
-    )
+    # auctionBid = forms.DecimalField(
+    #     widget=forms.NumberInput(attrs={
+    #         'class': 'form-control form-control-sm',
+    #     }),
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     required=False,
+    # )
 
     auctionImageFile = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={

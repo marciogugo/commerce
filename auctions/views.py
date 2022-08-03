@@ -135,19 +135,35 @@ def listings(request):
     form = AuctionForm()
 
     if request.method == 'POST':
-        print('post')
-        
-    listings = Listing.objects.values()
+        form = AuctionForm(request.POST)
 
-    if 'user_id' in request.session:
-        bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+        if not form.is_valid():
+            return render(request, "auctions/index.html", {
+                "message": "Fill out the requested bid value."
+            })
+        else:
+            listing = Listing.object.filter(listing_id = request.POST['listingId'])
+            listing_bid = request.POST['listingBid']
+
+            if listing_bid.value > 0:
+                bid = Bid()
+                bid.user = User
+                bid.product = listing
+                if bid.bid_starting_value == 0:
+                    bid.bid_starting_value = listing_bid
+                bid.bid_current_value = listing_bid
+                bid.save()
+
     else:
-        bookmarks = Watchlist.objects.values()
+        listings = Listing.objects.values()
 
-    h_bid = Bid.objects.values().filter(product__in = listings.values('listing_id'))
+        if 'user_id' in request.session:
+            bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+        else:
+            bookmarks = Watchlist.objects.values()
 
-    print("Todos produtos", listings.values('listing_id') , ' Preço: ' , listings.values('listing_price'))
-    print("View: ", h_bid)
+        bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
+        highest_bid = 0
 
     context= {
         'form': form,
@@ -156,7 +172,8 @@ def listings(request):
         'is_bookmarked': False,
         'bookmarks': bookmarks,
         'bookmark_count': bookmarks.count,
-        'highest_bid': h_bid,
+        'bids': bids,
+        'highest_bid': highest_bid,
     }
 
     return render(request, "auctions/index.html", context=context)
@@ -167,16 +184,16 @@ def watchlist(request):
 
     bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
     listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))
-    h_bid = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
-
-    # print("Maior:", h_bid)
+    bids = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+    highest_bid = 0
 
     context= {
         'form': form,
         'listings': listings,
         'bookmarks': bookmarks,
         'bookmark_count': bookmarks.count,
-        'highest_bid': h_bid,
+        'bids': bids,
+        'highest_bid': highest_bid,
     }
 
     return render(request, "auctions/watchlist.html", context=context)
