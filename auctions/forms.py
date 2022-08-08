@@ -121,19 +121,10 @@ class ListingForm(forms.Form):
     )
 
 class AuctionForm(forms.Form):
-    auctionId = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'value':'', 
-        }),
-    )
-
-    # auctionCategory = forms.ChoiceField(
-    #     widget=forms.Select(attrs={
-    #         'class': 'form-control form-control-sm',
-    #         'autofocus':'',
+    # auctionId = forms.IntegerField(
+    #     widget=forms.NumberInput(attrs={
+    #         'value':'', 
     #     }),
-    #     choices = CATEGORY_CHOICES,
-    #     default= None,
     # )
 
     auctionCategory = forms.ChoiceField(
@@ -167,15 +158,6 @@ class AuctionForm(forms.Form):
         decimal_places=2,
         required=False,
     )
-
-    # auctionBid = forms.DecimalField(
-    #     widget=forms.NumberInput(attrs={
-    #         'class': 'form-control form-control-sm',
-    #     }),
-    #     max_digits=10,
-    #     decimal_places=2,
-    #     required=False,
-    # )
 
     auctionImageFile = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={

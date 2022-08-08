@@ -1,14 +1,17 @@
+from unittest.mock import Mock
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from requests import Session
 
 from auctions.choices import CATEGORY_CHOICES
 
 from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, RegisterForm, AuctionForm
+
 
 def index(request):
     return listings(request)
@@ -134,6 +137,9 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
+    #request.session['listingId'] = 0
+    #request.session['listingBid'] = 0
+
     if request.method == 'POST':
         form = AuctionForm(request.POST)
 
@@ -142,10 +148,25 @@ def listings(request):
                 "message": "Fill out the requested bid value."
             })
         else:
-            listing = Listing.object.filter(listing_id = request.POST['listingId'])
-            listing_bid = request.POST['listingBid']
+            if 'listingId' in request.session:
+                print(request.session['listingId'])
+            else:
+                for key in request.session.keys():
+                    print(key)
 
-            if listing_bid.value > 0:
+                print(request.session)
+                print('nao encontou')
+
+            #listingId = request.session['listingId']
+            #listingBid = request.session['listingBid']
+
+            listingId = 0
+            listingBid = 0
+
+            listing = Listing.objects.filter(listing_id = 0)
+            listing_bid = 0
+
+            if listing_bid > 0: #listing_bid.value > 0:
                 bid = Bid()
                 bid.user = User
                 bid.product = listing
@@ -154,6 +175,15 @@ def listings(request):
                 bid.bid_current_value = listing_bid
                 bid.save()
 
+            listings = Listing.objects.values()
+
+            if 'user_id' in request.session:
+                bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+            else:
+                bookmarks = Watchlist.objects.values()
+
+            bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
+            highest_bid = 0
     else:
         listings = Listing.objects.values()
 

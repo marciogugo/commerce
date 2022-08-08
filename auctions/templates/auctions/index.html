@@ -24,6 +24,23 @@
 
         sessionStorage.setItem('listingId', id)
         sessionStorage.setItem('listingBid', document.getElementById("bidValue"+id).value)
+
+        /*sessionStorage['listingId'] = id
+        sessionStorage['listingBid'] = document.getElementById("bidValue"+id).value*/
+
+        alert(sessionStorage.getItem('listingId'))
+        alert(sessionStorage.getItem('listingBid'))
+
+        alert(sessionStorage['listingId'])
+        alert(sessionStorage['listingBid'])
+
+        context['data'] = [
+            'listingId': id,
+            'listingBid': sessionStorage['listingBid']
+        ]
+        
+        /*alert(sessionStorage['id'])
+        alert(document.getElementById("bidValue"+id).value)*/
     }
 </script>
 
