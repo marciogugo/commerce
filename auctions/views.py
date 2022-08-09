@@ -1,17 +1,14 @@
-from unittest.mock import Mock
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from requests import Session
 
 from auctions.choices import CATEGORY_CHOICES
 
 from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, RegisterForm, AuctionForm
-
 
 def index(request):
     return listings(request)
@@ -137,9 +134,6 @@ def new_listing(request):
 def listings(request):
     form = AuctionForm()
 
-    #request.session['listingId'] = 0
-    #request.session['listingBid'] = 0
-
     if request.method == 'POST':
         form = AuctionForm(request.POST)
 
@@ -148,31 +142,25 @@ def listings(request):
                 "message": "Fill out the requested bid value."
             })
         else:
-            if 'listingId' in request.session:
-                print(request.session['listingId'])
-            else:
-                for key in request.session.keys():
-                    print(key)
+            listingId = request.POST['currentId']
+            listingBid = request.POST['currentBid']
 
-                print(request.session)
-                print('nao encontou')
+            print("Dentro",listingBid)
+            print("Dentro",listingId)
 
-            #listingId = request.session['listingId']
-            #listingBid = request.session['listingBid']
+            listing = Listing.objects.get(listing_id = listingId)
 
-            listingId = 0
-            listingBid = 0
+            print("Listingsss",listing)
 
-            listing = Listing.objects.filter(listing_id = 0)
-            listing_bid = 0
-
-            if listing_bid > 0: #listing_bid.value > 0:
+            if listingBid != 0:
+                user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
+                
                 bid = Bid()
-                bid.user = User
+                bid.user = user
                 bid.product = listing
                 if bid.bid_starting_value == 0:
-                    bid.bid_starting_value = listing_bid
-                bid.bid_current_value = listing_bid
+                    bid.bid_starting_value = listingBid
+                bid.bid_current_value = listingBid
                 bid.save()
 
             listings = Listing.objects.values()
