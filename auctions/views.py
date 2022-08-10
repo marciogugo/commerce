@@ -1,14 +1,20 @@
+from socket import TCP_NODELAY
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils import timezone 
 
 from auctions.choices import CATEGORY_CHOICES
 
 from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, RegisterForm, AuctionForm
+
+from django.db.models import Max
+from django.db.models import F, Value
+from django.db.models.functions import Greatest, Coalesce
 
 def index(request):
     return listings(request)
@@ -143,14 +149,11 @@ def listings(request):
             })
         else:
             listingId = request.POST['currentId']
-            listingBid = request.POST['currentBid']
+            listingBid = request.POST['currentBid'+listingId]
 
-            print("Dentro",listingBid)
-            print("Dentro",listingId)
+            print("Preço autal " + listingBid)
 
             listing = Listing.objects.get(listing_id = listingId)
-
-            print("Listingsss",listing)
 
             if listingBid != 0:
                 user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
@@ -161,6 +164,8 @@ def listings(request):
                 if bid.bid_starting_value == 0:
                     bid.bid_starting_value = listingBid
                 bid.bid_current_value = listingBid
+                bid.bid_start_date_time = timezone.now()
+                bid.bid_finish_date_time = None
                 bid.save()
 
             listings = Listing.objects.values()
@@ -170,8 +175,10 @@ def listings(request):
             else:
                 bookmarks = Watchlist.objects.values()
 
-            bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
-            highest_bid = 0
+            #bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
+            bids = Bid.objects.values().filter(product__in = listings.values('listing_id')).aggregate(Max('bid_current_value'))
+            
+            highest_bid = bids.get('bid_current_value__max')
     else:
         listings = Listing.objects.values()
 
@@ -181,7 +188,15 @@ def listings(request):
             bookmarks = Watchlist.objects.values()
 
         bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
-        highest_bid = 0
+        bids = Bid.objects.values().filter(
+            product__in = listings.values('listing_id')).aggregate(
+                max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
+
+        print("As bids:",bids)
+        print("Max ", bids.get('max'))
+        #print("As bids:",bids.get('max'))
+
+        highest_bid = bids.get('bid_current_value__max')
 
     context= {
         'form': form,

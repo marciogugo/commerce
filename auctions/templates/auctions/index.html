@@ -31,8 +31,46 @@
         /*alert(sessionStorage.getItem('listingId'))
         alert(sessionStorage.getItem('listingBid'))*/
 
+        /*alert("Id: " + id);
+        alert("Valor: " + document.getElementById("bidValue"+id).value);*/
+
+        var priorBid = document.getElementById("priorBid"+id).value;
+        var currentBid = document.getElementById("bidValue"+id).value;
+
+        /*
+        aqui funciona sem essa primeira linha debaixo
+
+        document.getElementById('priorBid').innerHTML = document.getElementById("priorBid"+id).value
         document.getElementById('currentId').innerHTML = id
-        document.getElementById('currentBid').innerHTML = document.getElementById("bidValue"+id).value
+        document.getElementById('currentBid').innerHTML = document.getElementById("bidValue"+id).value*/
+
+        /*alert("Atual: " + currentBid);
+        alert("Prior: " + priorBid);*/
+
+        if(currentBid <= priorBid) {
+            document.getElementById("priorBid"+id)
+            document.getElementById("buttonSubmit"+id).type = 'button'
+
+            alert('Bid must be greater than ' + priorBid);
+        }
+        else {
+            /*document.forms['myform'].submit(); tentar assim também */
+
+            alert("1")
+            document.getElementById('priorBid'+id).innerHTML = document.getElementById("priorBid"+id).value;
+            alert("2")
+            document.getElementById('currentId').innerHTML = id;
+            alert("3")
+            document.getElementById('currentBid').innerHTML = document.getElementById("bidValue"+id).value;
+            alert("4")
+    
+            /*sessionStorage.setItem('listingId', id);
+            sessionStorage.setItem('listingBid', document.getElementById("bidValue"+id).value);*/
+
+            alert('Bid placed successfully!');
+
+            document.getElementById("buttonSubmit"+id).type = 'submit'
+        }
 
         /*$('#currentId').val(sessionStorage.getItem('listingId').value)
         $('#currentBid').val(sessionStorage.getItem('listingBid').value)*/
@@ -50,7 +88,7 @@
 <div class="form-listings">
     <h2 class="h2-header">Active Listings</h2>
 
-    <form action="{% url 'listings' %}" method="POST" name="ListingForm" enctype="multipart/form-data">
+    <form action="{% url 'listings' %}" method="POST" id="listingForm" name="ListingForm" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             {% for listing in listings|columns:4 %}
@@ -122,8 +160,9 @@
                                 {% update_variable item.listing_price as highest_bid %}
                             {% endif %}
 
+                            <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ highest_bid }}">
                             <input type="hidden" id="currentId" name="currentId" value="{{ item.listing_id }}">
-                            <input type="hidden" id="currentBid" name="currentBid" value="{{ highest_bid }}">
+                            <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ highest_bid }}">
 
                             <div class="col-sm-10">
                                 <div class="input-group" style="width:300px;">

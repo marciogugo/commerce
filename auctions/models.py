@@ -32,7 +32,7 @@ class Bid(models.Model):
     bid_starting_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
     bid_current_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
     bid_start_date_time = models.DateTimeField(default = datetime.now)
-    bid_finish_date_time = models.DateTimeField(default = datetime.now)
+    bid_finish_date_time = models.DateTimeField(default = datetime.now, null=True)
     def __str__(self):
         return f"Product: {models.product.listing.content} Starting Bid: {self.bid_starting_value} Status: {self.bid_current_value}"
 

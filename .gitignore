@@ -32,3 +32,6 @@ commerce/__pycache__/__init__.cpython-310.pyc
 commerce/__pycache__/settings.cpython-310.pyc
 commerce/__pycache__/urls.cpython-310.pyc
 *.pyc
+*.pyc
+*.pyc
+*.pyc
