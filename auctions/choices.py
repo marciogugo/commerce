@@ -38,3 +38,8 @@ CATEGORY_CHOICES = (
         ),
     ),
 )
+
+BID_CHOICES = (
+    ("Y","Yes"),
+    ("N","No")
+)

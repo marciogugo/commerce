@@ -3,7 +3,7 @@ from enum import auto
 from time import timezone 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .choices import CATEGORY_CHOICES
+from .choices import CATEGORY_CHOICES, BID_CHOICES
 
 class User(AbstractUser):
     def __str__(self):
@@ -29,12 +29,13 @@ class Watchlist(models.Model):
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    bid_starting_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
+    #bid_starting_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
     bid_current_value = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0)
-    bid_start_date_time = models.DateTimeField(default = datetime.now)
-    bid_finish_date_time = models.DateTimeField(default = datetime.now, null=True)
+    #bid_start_date_time = models.DateTimeField(default = datetime.now)
+    #bid_finish_date_time = models.DateTimeField(default = datetime.now, null=True)
+    bid_finished = models.CharField(max_length=1, choices=BID_CHOICES, default=None)
     def __str__(self):
-        return f"Product: {models.product.listing.content} Starting Bid: {self.bid_starting_value} Status: {self.bid_current_value}"
+        return f"Product: {models.product.listing.content} Starting Bid: {self.bid_current_value} Status: {self.bid_finished}"
 
 class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

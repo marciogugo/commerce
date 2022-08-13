@@ -13,7 +13,7 @@ from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, RegisterForm, AuctionForm
 
 from django.db.models import Max
-from django.db.models import F, Value
+from django.db.models import F, Q, Value
 from django.db.models.functions import Greatest, Coalesce
 
 def index(request):
@@ -161,11 +161,12 @@ def listings(request):
                 bid = Bid()
                 bid.user = user
                 bid.product = listing
-                if bid.bid_starting_value == 0:
-                    bid.bid_starting_value = listingBid
+                #if bid.bid_starting_value == 0:
+                #    bid.bid_starting_value = listingBid
                 bid.bid_current_value = listingBid
-                bid.bid_start_date_time = timezone.now()
-                bid.bid_finish_date_time = None
+                #bid.bid_start_date_time = timezone.now()
+                #bid.bid_finish_date_time = None
+                bid.bid_finished = 'N'
                 bid.save()
 
             listings = Listing.objects.values()
@@ -187,16 +188,28 @@ def listings(request):
         else:
             bookmarks = Watchlist.objects.values()
 
-        bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
-        bids = Bid.objects.values().filter(
-            product__in = listings.values('listing_id')).aggregate(
-                max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
+        # correto bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
 
-        print("As bids:",bids)
-        print("Max ", bids.get('max'))
+        bids = Bid.objects.values().filter(product__in = listings.values('listing_id')).distinct()
+        bids = bids.annotate(max=Max('bid_current_value', filter=Q(product__in = listings.values('listing_id'))))
+
+        #bids = bids.annotate(max=Max('bid_current_value'))
+        #maxBids = Bid.objects.values().filter(
+        #    product__in = listings.values('listing_id')).aggregate(
+        #        max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
+
+        #maxBids = Bid.objects.values().filter(
+        #    product__in = listings.values('listing_id')).aggregate(
+        #        max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
+
+        print("As bids:", bids.values('product_id'))
+        print("As bids:",bids.values('max','product_id'))
+        #print("As bids:",bids.get('max'))
+        #print("Max1 ", maxBids)
+        #print("Max2 ", maxBids.get('max'))
         #print("As bids:",bids.get('max'))
 
-        highest_bid = bids.get('bid_current_value__max')
+        highest_bid = 0 #bids.get('bid_current_value__max')
 
     context= {
         'form': form,

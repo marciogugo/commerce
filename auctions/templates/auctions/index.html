@@ -56,13 +56,9 @@
         else {
             /*document.forms['myform'].submit(); tentar assim também */
 
-            alert("1")
             document.getElementById('priorBid'+id).innerHTML = document.getElementById("priorBid"+id).value;
-            alert("2")
             document.getElementById('currentId').innerHTML = id;
-            alert("3")
-            document.getElementById('currentBid').innerHTML = document.getElementById("bidValue"+id).value;
-            alert("4")
+            document.getElementById('currentBid'+id).value = document.getElementById("bidValue"+id).value;
     
             /*sessionStorage.setItem('listingId', id);
             sessionStorage.setItem('listingBid', document.getElementById("bidValue"+id).value);*/
@@ -171,6 +167,7 @@
                                 </div>
                             </div>
                             <button type="submit" id="buttonSubmit{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ item.listing_id }});">Place Bid</button>
+                            <button type="text" id="buttonCancel{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ item.listing_id }});">Cancel</button>
                         </div>
                     {% endif %}
                     <hr>
