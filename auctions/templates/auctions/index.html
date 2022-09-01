@@ -14,8 +14,23 @@
         document.getElementById("buttonPlaceBid"+id).style.display="none";
         document.getElementById("divPlaceBid"+id).style.display="";
 
+        /*alert("Id: " + id);*/
+
         /*sessionStorage.setItem('listingId', 0)
         sessionStorage.setItem('listingBid', 0)*/
+    }
+
+    function cancelBid(id) { 
+        /*document.getElementById("currentBid"+id).value = 0;
+        document.getElementById("priorBid"+id).value = 0;
+
+        document.getElementById("bidValue"+id).style.display="none";
+        document.getElementById("bidValue"+id).value=0;*/
+
+        document.getElementById("buttonPlaceBid"+id).style.display="none";
+        document.getElementById("divPlaceBid"+id).style.display="";
+        
+        alert('cancel');
     }
 
     function submitBid(id) { 
@@ -31,8 +46,8 @@
         /*alert(sessionStorage.getItem('listingId'))
         alert(sessionStorage.getItem('listingBid'))*/
 
-        /*alert("Id: " + id);
-        alert("Valor: " + document.getElementById("bidValue"+id).value);*/
+        alert("Id: " + id);
+        alert("Valor: " + document.getElementById("bidValue"+id).value);
 
         var priorBid = document.getElementById("priorBid"+id).value;
         var currentBid = document.getElementById("bidValue"+id).value;
@@ -128,7 +143,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Starting Bid:</label>
+                        <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Current Bid:</label>
                         US${{ item.listing_price }}
                     </div>
 
@@ -145,7 +160,7 @@
                                     {% if bid.bid_current_value == 0 %}
                                         {% update_variable item.listing_price as highest_bid %}
                                     {% else %}
-                                        {{ bid.bid_current_value }}
+                                        {{ bid.bid_current_value }} 
                                     {% endif %}
                                 {% endif %}
                             {% empty %}
@@ -155,7 +170,7 @@
                             {% if forloop.last and highest_bid == 0 %}
                                 {% update_variable item.listing_price as highest_bid %}
                             {% endif %}
-
+                            
                             <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ highest_bid }}">
                             <input type="hidden" id="currentId" name="currentId" value="{{ item.listing_id }}">
                             <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ highest_bid }}">
@@ -167,7 +182,7 @@
                                 </div>
                             </div>
                             <button type="submit" id="buttonSubmit{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ item.listing_id }});">Place Bid</button>
-                            <button type="text" id="buttonCancel{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ item.listing_id }});">Cancel</button>
+                            <button type="button" id="buttonCancel{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="cancelBid({{ item.listing_id }});">Cancel</button>
                         </div>
                     {% endif %}
                     <hr>
