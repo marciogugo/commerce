@@ -1,5 +1,6 @@
 from itertools import product
 from socket import TCP_NODELAY
+from xml.etree.ElementTree import Comment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -10,8 +11,8 @@ from django.utils import timezone
 
 from auctions.choices import CATEGORY_CHOICES
 
-from .models import User, Listing, Watchlist, Bid
-from .forms import ListingForm, RegisterForm, AuctionForm
+from .models import User, Listing, Watchlist, Bid, Comments
+from .forms import ListingForm, RegisterForm, AuctionForm, CommentsForm
 
 from django.db.models import Max
 from django.db.models import F, Q, Value
@@ -150,10 +151,9 @@ def listings(request):
                 "message": "Fill out the requested bid value."
             })
         else:
-            listingId = request.POST['currentId']
+            #print("Post ", request.POST)
+            listingId  = request.POST['currentId']
             listingBid = request.POST['currentBid'+listingId]
-
-            print("Preço autal " + listingId, listingBid)
 
             listing = Listing.objects.get(listing_id = listingId)
 
@@ -174,10 +174,16 @@ def listings(request):
             else:
                 bookmarks = Watchlist.objects.values()
 
-            #bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
-            bids = Bid.objects.values().filter(product__in = listings.values('listing_id')).aggregate(Max('bid_current_value'))
+            bids = Bid.objects.raw('select listing_id as id, '+
+                                '       listing_price, '+
+                                '       coalesce((select max(bid_current_value) '+
+                                '                   from auctions_bid '+
+                                '                  where product_id = listing_id),0) as highest_bid '+
+                                '  from auctions_listing')
             
-            highest_bid = bids.get('bid_current_value__max')
+            highest_bid = 0
+
+            comments = Comments.objects.all()
     else:
         listings = Listing.objects.values()
 
@@ -186,41 +192,16 @@ def listings(request):
         else:
             bookmarks = Watchlist.objects.values()
 
-        bids = Bid.objects.raw('select id, product_id, max(bid_current_value) as highest_bid from auctions_bid group by product_id')
+        bids = Bid.objects.raw('select listing_id as id, '+
+                               '       listing_price, '+
+                               '       coalesce((select max(bid_current_value) '+
+                               '                   from auctions_bid '+
+                               '                  where product_id = listing_id),0) as highest_bid '+
+                               '  from auctions_listing')
 
-        for b in bids:
-            print("Nova bid", b.id, b.highest_bid)
+        highest_bid = 0
 
-        # correto bids = Bid.objects.values().filter(product__in = listings.values('listing_id'))
-
-        #bids = Bid.objects.values().filter(product__in = listings.values('listing_id')).distinct()
-        #bids = Bid.objects.values().filter(product__in = listings.values('listing_id')).annotate(max=Max('bid_current_value'))
-
-        #print("Distinct ", bids.values())
-        
-        #bids = bids.values().annotate(max=Max('bid_current_value')).order_by('-bid_current_value')
-
-        #bids = bids.values().annotate(max=Max('bid_current_value')).order_by('-bid_current_value')
-
-        print("passou")
-        #bids = bids.annotate(max=Max('bid_current_value'))
-        #maxBids = Bid.objects.values().filter(
-        #    product__in = listings.values('listing_id')).aggregate(
-        #        max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
-
-        #maxBids = Bid.objects.values().filter(
-        #    product__in = listings.values('listing_id')).aggregate(
-        #        max = Coalesce(Max('bid_current_value'),listings.values('listing_price')))
-
-        #print("As bids:", bids.values('bid_current_value'))
-        #print("As bids:",bids.values('max','product_id'))
-        #print("As bids:",bids.get('max'))
-        #print("Max1 ", maxBids)
-        #print("Max2 ", maxBids.get('max'))
-        #print("As bids:",bids.get('max'))
-
-        highest_bid = 0 #bids.get('bid_current_value__max')
-
+        comments = Comments.objects.all()
     context= {
         'form': form,
         'listings': listings,
@@ -230,9 +211,15 @@ def listings(request):
         'bookmark_count': bookmarks.count,
         'bids': bids,
         'highest_bid': highest_bid,
+        'comments': comments,
     }
 
     return render(request, "auctions/index.html", context=context)
+
+def comments(request):
+    form = CommentsForm()
+
+    pass
 
 @login_required
 def watchlist(request):
@@ -295,3 +282,22 @@ def remove_watchlist(request):
         }
         return render(request, "auctions/index.html", context=context)
     return HttpResponseRedirect(reverse("listings"))
+
+def categories(request):
+    form = AuctionForm()
+
+    bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
+    listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))
+    bids = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+    highest_bid = 0
+
+    context= {
+        'form': form,
+        'listings': listings,
+        'bookmarks': bookmarks,
+        'bookmark_count': bookmarks.count,
+        'bids': bids,
+        'highest_bid': highest_bid,
+    }
+
+    return render(request, "auctions/categories.html", context=context)

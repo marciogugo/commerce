@@ -3,7 +3,10 @@ import select
 from attr import attrs
 from django import forms
 from django.conf import settings
+
+from auctions.models import Listing, Comments
 from .choices import CATEGORY_CHOICES
+from django.forms.models import inlineformset_factory
 
 class RegisterForm(forms.Form):
     registerFirstName = forms.CharField(
@@ -121,17 +124,6 @@ class ListingForm(forms.Form):
     )
 
 class AuctionForm(forms.Form):
-    # auctionId = forms.IntegerField(
-    #     widget=forms.NumberInput(attrs={
-    #         'value':'', 
-    #     }),
-    # )
-
-    # auctionCategory = forms.ChoiceField(
-    #     choices = CATEGORY_CHOICES,
-    #     required=False,
-    # )
-
     auctionTitle = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
@@ -168,3 +160,15 @@ class AuctionForm(forms.Form):
         }),
         required=False,
     )
+
+class CommentsForm(forms.Form):
+    commentsContent = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
+        }),
+        required=False,
+    )
+
+#CommentsFormset = inlineformset_factory(Listing, Comments, extra = 1)
