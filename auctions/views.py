@@ -12,7 +12,7 @@ from django.utils import timezone
 from auctions.choices import CATEGORY_CHOICES
 
 from .models import User, Listing, Watchlist, Bid, Comments
-from .forms import ListingForm, RegisterForm, AuctionForm, CommentsForm
+from .forms import ListingForm, RegisterForm, AuctionForm, CommentsForm, CategoriesForm
 
 from django.db.models import Max
 from django.db.models import F, Q, Value
@@ -284,7 +284,7 @@ def remove_watchlist(request):
     return HttpResponseRedirect(reverse("listings"))
 
 def categories(request):
-    form = AuctionForm()
+    form = CategoriesForm()
 
     bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
     listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))

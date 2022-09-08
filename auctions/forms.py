@@ -162,6 +162,12 @@ class AuctionForm(forms.Form):
     )
 
 class CommentsForm(forms.Form):
+    commentsCategory = forms.ChoiceField(
+        widget=forms.Select(),  
+        choices = CATEGORY_CHOICES,
+        required=False,
+    )    
+
     commentsContent = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'form-control form-control-sm',
@@ -172,3 +178,60 @@ class CommentsForm(forms.Form):
     )
 
 #CommentsFormset = inlineformset_factory(Listing, Comments, extra = 1)
+
+class CategoriesForm(forms.Form):
+    categoriesCategory = forms.ChoiceField(
+        widget=forms.Select(),  
+        choices = CATEGORY_CHOICES,
+        required=False,
+    )
+
+    categoriesTitle = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control form-control-sm',
+            'autofocus':'',
+        }),
+        max_length=100,
+        required=False,
+    )
+
+    categoriesContent = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
+        }),
+        required=False,
+    )
+
+    categoriesPrice = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control form-control-sm',
+        }),
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+    )
+
+    categoriesBid = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control form-control-sm',
+            'id':'bid_current_value',
+        }),
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+    )
+
+    categoriesImageFile = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={
+            'id':'formFile',
+            'class':'form-control',
+            # 'max-width':'50%',
+            # 'height':'50%',
+            'type': 'file',
+            'onchange':'preview()',
+            'required':'false',
+        }),
+        required=False,
+    )
