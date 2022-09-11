@@ -286,18 +286,25 @@ def remove_watchlist(request):
 def categories(request):
     form = CategoriesForm()
 
-    bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
-    listings = Listing.objects.values().filter(listing_id__in = bookmarks.values('product_id'))
-    bids = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
-    highest_bid = 0
+    listings = []
+
+    print('dentro da view')
+
+    if 'category_id' in request.session:
+        print(request.session['category_id'])
+        listings = Listing.objects.values().filter(listing_category__in = request.session['category_id'])
+        
+    #bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
+    #bids = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
+    #highest_bid = 0
 
     context= {
         'form': form,
         'listings': listings,
-        'bookmarks': bookmarks,
-        'bookmark_count': bookmarks.count,
-        'bids': bids,
-        'highest_bid': highest_bid,
+        #'bookmarks': bookmarks,
+        #'bookmark_count': bookmarks.count,
+        #'bids': bids,
+        #'highest_bid': highest_bid,
     }
 
     return render(request, "auctions/categories.html", context=context)

@@ -181,7 +181,7 @@ class CommentsForm(forms.Form):
 
 class CategoriesForm(forms.Form):
     categoriesCategory = forms.ChoiceField(
-        widget=forms.Select(),  
+        widget=forms.Select(attrs={'onchange':'loadListing()'}),
         choices = CATEGORY_CHOICES,
         required=False,
     )
@@ -223,15 +223,8 @@ class CategoriesForm(forms.Form):
         required=False,
     )
 
-    categoriesImageFile = forms.ImageField(
-        widget=forms.ClearableFileInput(attrs={
-            'id':'formFile',
-            'class':'form-control',
-            # 'max-width':'50%',
-            # 'height':'50%',
-            'type': 'file',
-            'onchange':'preview()',
-            'required':'false',
-        }),
+    categoriesImage = forms.ImageField(
         required=False,
     )
+
+    
