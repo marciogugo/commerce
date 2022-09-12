@@ -14,6 +14,11 @@ TACTICAL = 'Tactical & Duty Gear'
 WATER_SPORTS = 'Water Sports'
 
 CATEGORY_CHOICES = (
+    # ('Empty', (
+    #     ('Empty','Empty'),
+    #     ),
+    # ),
+    ('',''),
     ('Electronics', (
         ('Computers & Tablets', 'Computers & Tablets'),
         ('Cameras & Photo', 'Cameras & Photo'),

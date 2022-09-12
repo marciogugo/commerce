@@ -1,6 +1,5 @@
 from itertools import product
 from socket import TCP_NODELAY
-from xml.etree.ElementTree import Comment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -11,7 +10,7 @@ from django.utils import timezone
 
 from auctions.choices import CATEGORY_CHOICES
 
-from .models import User, Listing, Watchlist, Bid, Comments
+from .models import User, Listing, Watchlist, Bid, Comment
 from .forms import ListingForm, RegisterForm, AuctionForm, CommentsForm, CategoriesForm
 
 from django.db.models import Max
@@ -101,6 +100,7 @@ def register(request):
 @login_required
 def new_listing(request):
     form = ListingForm()
+    bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
 
     if request.method == "POST":
         form = ListingForm(request.POST, request.FILES)
@@ -135,7 +135,8 @@ def new_listing(request):
             return HttpResponseRedirect(reverse("index"))
 
     context= {
-        'form': form
+        'form': form,
+        'bookmark_count': bookmarks.count,
     }
     return render(request, "auctions/new_listing.html", context=context)
 
@@ -151,7 +152,6 @@ def listings(request):
                 "message": "Fill out the requested bid value."
             })
         else:
-            #print("Post ", request.POST)
             listingId  = request.POST['currentId']
             listingBid = request.POST['currentBid'+listingId]
 
@@ -175,11 +175,11 @@ def listings(request):
                 bookmarks = Watchlist.objects.values()
 
             bids = Bid.objects.raw('select listing_id as id, '+
-                                '       listing_price, '+
-                                '       coalesce((select max(bid_current_value) '+
-                                '                   from auctions_bid '+
-                                '                  where product_id = listing_id),0) as highest_bid '+
-                                '  from auctions_listing')
+                                   '       listing_price, '+
+                                   '       coalesce((select max(bid_current_value) '+
+                                   '                   from auctions_bid '+
+                                   '                  where product_id = listing_id),0) as highest_bid '+
+                                   '  from auctions_listing')
             
             highest_bid = 0
 
@@ -286,25 +286,22 @@ def remove_watchlist(request):
 def categories(request):
     form = CategoriesForm()
 
-    listings = []
+    listings = Listing.objects.values()
+    bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
 
-    print('dentro da view')
+    if request.method == 'POST':
+        form = CategoriesForm(request.POST)
 
-    if 'category_id' in request.session:
-        print(request.session['category_id'])
-        listings = Listing.objects.values().filter(listing_category__in = request.session['category_id'])
-        
-    #bookmarks = Watchlist.objects.filter(user_id=request.session['user_id'])
-    #bids = Bid.objects.values().filter(product__in = bookmarks.values('product_id'))
-    #highest_bid = 0
+        if 'categoriesCategory' in request.POST:
+            if request.POST['categoriesCategory'] == '':
+                listings = Listing.objects.values()
+            else:
+                listings = Listing.objects.values().filter(listing_category = request.POST['categoriesCategory'])
 
     context= {
         'form': form,
         'listings': listings,
-        #'bookmarks': bookmarks,
-        #'bookmark_count': bookmarks.count,
-        #'bids': bids,
-        #'highest_bid': highest_bid,
+        'bookmark_count': bookmarks.count,
     }
 
     return render(request, "auctions/categories.html", context=context)

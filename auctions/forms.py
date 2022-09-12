@@ -4,7 +4,7 @@ from attr import attrs
 from django import forms
 from django.conf import settings
 
-from auctions.models import Listing, Comments
+from auctions.models import Listing, Comment
 from .choices import CATEGORY_CHOICES
 from django.forms.models import inlineformset_factory
 
@@ -226,5 +226,3 @@ class CategoriesForm(forms.Form):
     categoriesImage = forms.ImageField(
         required=False,
     )
-
-    

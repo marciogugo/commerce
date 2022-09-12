@@ -34,7 +34,7 @@ class Bid(models.Model):
     def __str__(self):
         return f"Product: {Listing.listing_content} Starting Bid: {self.bid_current_value} Status: {self.bid_finished}"
 
-class Comments(models.Model):
+class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Listing, on_delete=models.CASCADE)
     comment_content = models.CharField(max_length=500)
