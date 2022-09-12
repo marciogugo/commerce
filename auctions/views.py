@@ -183,7 +183,7 @@ def listings(request):
             
             highest_bid = 0
 
-            comments = Comments.objects.all()
+            comments = Comment.objects.all()
     else:
         listings = Listing.objects.values()
 
@@ -201,7 +201,7 @@ def listings(request):
 
         highest_bid = 0
 
-        comments = Comments.objects.all()
+        comments = Comment.objects.all()
     context= {
         'form': form,
         'listings': listings,
