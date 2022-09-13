@@ -44,6 +44,15 @@
             alert('Bid placed successfully!');
         }
     }
+
+    function closeBid(id) {
+        document.getElementById("currentId").value = id;
+        document.getElementById("priorBid"+id).innerHTML = document.getElementById("priorBid"+id).value;
+        document.getElementById("currentBid"+id).value = -1;
+
+        document.getElementById("buttonClose"+id).name = 'buttonClose'+id
+        document.getElementById("buttonClose"+id).type = 'submit'
+    }
 </script>
 
 <div class="form-listings">
@@ -104,12 +113,30 @@
                     </div>
 
                     {% if user.is_authenticated %}
-                        <button type="button" id="buttonPlaceBid{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid({{ item.listing_id }});">Place Bid</button>
+                        {% if item.listing_finished != 'S' %}
+                            <button type="button" id="buttonPlaceBid{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid({{ item.listing_id }});">Place Bid</button>
+                        {% endif %}
+                        {% if user.id == item.user_id and item.listing_finished != 'S' %}
+                            <button type="button" id="buttonClose{{ item.listing_id }}"  class="btn btn-primary mt-3" onclick="closeBid({{ item.listing_id }});">Close Bid</button>
+                        {% endif %}
+
+                        {% for bid in bids %}
+                            {% if bid.id == item.listing_id %}
+                                {% if user.id == bid.winner %}
+                                    <div class="col-sm-10">
+                                        <div class="winner-message">
+                                            You're the current winner!
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
                         <div class="input-group-sm" id="divPlaceBid{{ item.listing_id }}" style="display:none">
                             {% for bid in bids %}
                                 {% if bid.id == item.listing_id %}
                                     {% if bid.highest_bid == 0 %}
-                                        {% update_variable item.listing_price as thighest_bid %}
+                                        {% update_variable item.listing_price as highest_bid %}
                                         <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thighest_bid }}">
                                         <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thighest_bid }}">
                                         <div class="col-sm-10">
@@ -118,30 +145,28 @@
                                                 <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step=".01" style="width:150px; height:30px;" class="form-control" value="{{ thighest_bid }}">
                                             </div>
                                         </div>
-                                        zero
-                                        {% update_variable item.listing_price as thighest_bid %}
+                                        {% update_variable item.listing_price as thehighest_bid %}
                                     {% else %}
-                                        {% update_variable bid.highest_bid as thighest_bid %}
-                                        <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thighest_bid }}">
-                                        <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thighest_bid }}">
+                                        {% update_variable bid.highest_bid as thehighest_bid %}
+                                        <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
+                                        <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
                                         <div class="col-sm-10">
                                             <div class="input-group" style="width:300px;">
                                                 <span class="col-sm2 col-form-label col-form-label-sm input-group-addon">Max Bid:</span>
-                                                <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step=".01" style="width:150px; height:30px;" class="form-control" value="{{ thighest_bid }}">
+                                                <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step=".01" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
                                             </div>
                                         </div>
-                                                    
                                     {% endif %}
                                 {% endif %}
                             {% empty %}
-                                {% update_variable item.listing_price as thighest_bid %}
-                                <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thighest_bid }}">
-                                <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thighest_bid }}">
+                                {% update_variable item.listing_price as thehighest_bid %}
+                                <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
+                                <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
 
                                 <div class="col-sm-10">
                                     <div class="input-group" style="width:300px;">
                                         <span class="col-sm2 col-form-label col-form-label-sm input-group-addon">Max Bid:</span>
-                                        <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step=".01" style="width:150px; height:30px;" class="form-control" value="{{ thighest_bid }}">
+                                        <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thehighest_bid }}" step=".01" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
                                     </div>
                                 </div>
                             {% endfor %}
@@ -153,7 +178,7 @@
 
                     <hr>
 
-                    <form action="{% url 'comments' %}" method="POST" id="commentsForm" name="CommentsForm" enctype="multipart/form-data">
+                    {% comment %} <form action="{% url 'comments' %}" method="POST" id="commentsForm" name="CommentsForm" enctype="multipart/form-data">
                         {% for comment in comments %}
                             <div class="col-sm-10">
                                 <label for="commentContent" class="col-sm2 col-form-label col-form-label-sm">Comment:</label>
@@ -164,7 +189,7 @@
                                 <button type="submit" id="buttonSubmitComment{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitComment({{ item.listing_id }});">Add comment</button>
                             {% endif %}
                         {% endfor %}
-                    </form>
+                    </form> {% endcomment %}
 
                 {% endfor %} <!-- for listing in listings --!>
             </div><!-- /col-md-4 -->

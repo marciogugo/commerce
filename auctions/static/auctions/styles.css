@@ -111,6 +111,12 @@ nav {
     color: red;
 }
 
+.winner-message {
+    height: 30px;
+    color: red;
+}
+
+
 .form-group .form-button {
     width: 300px;
     align-items: center;
