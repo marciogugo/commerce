@@ -114,8 +114,6 @@ class ListingForm(forms.Form):
         widget=forms.ClearableFileInput(attrs={
             'id':'formFile',
             'class':'form-control',
-            # 'max-width':'50%',
-            # 'height':'50%',
             'type': 'file',
             'onchange':'preview()',
             'required':'false',

@@ -145,6 +145,89 @@ def new_listing(request):
     return render(request, "auctions/new_listing.html", context=context)
 
 
+def redirect_auction(request):
+    form = AuctionForm()
+
+    if request.method == 'POST':
+        print("entrou post")
+        print("nem vai precisar do post")
+        form = AuctionForm(request.POST)
+
+        if not form.is_valid():
+            return render(request, "auctions/index.html", {
+                "message": "Fill out the requested bid value."
+            })
+        else:
+            listingId  = request.POST['currentId']
+            listingBid = request.POST['currentBid'+listingId]
+
+            listing = Listing.objects.get(listing_id = listingId)
+            user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
+
+            if listingBid != '-1':
+                bid = Bid()
+                bid.user = user
+                bid.product = listing
+                bid.bid_current_value = listingBid
+                bid.bid_finished = 'N'
+                bid.save()
+            else:
+                listing.listing_finished = 'S'
+                listing.save()
+
+            listings = Listing.objects.values()
+
+            if 'user_id' in request.session:
+                bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+            else:
+                bookmarks = Watchlist.objects.values()
+
+            bids = Bid.objects.raw('select listing_id as id, '+
+                                   '       listing_price, '+
+                                   '       coalesce((select max(bid_current_value) '+
+                                   '                   from auctions_bid '+
+                                   '                  where product_id = listing_id),listing_price) as highest_bid '+
+                                   '  from auctions_listing')
+            
+            highest_bid = 0
+
+            comments = Comment.objects.all()
+    else:
+        listing = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
+
+        if 'user_id' in request.session:
+            bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+        else:
+            bookmarks = Watchlist.objects.values()
+
+        bids = Bid.objects.raw('select listing_id as id, '+
+                               '       user_id, '+
+                               '       listing_finished, '+
+                               '       listing_price, '+
+                               '       coalesce((select max(bid_current_value) '+
+                               '                   from auctions_bid '+
+                               '                  where product_id = listing_id),listing_price) as highest_bid, '+
+                               '       coalesce((select user_id '+ 
+                               '                   from (select user_id, max(bid_current_value) from auctions_bid where product_id = listing_id)),0) as winner '+
+                               '  from auctions_listing')
+
+        highest_bid = 0
+
+        comments = Comment.objects.all()
+    context= {
+        'form': form,
+        'listing': listing,
+        'categories': CATEGORY_CHOICES,
+        'is_bookmarked': False,
+        'bookmarks': bookmarks,
+        'bookmark_count': bookmarks.count,
+        'bids': bids,
+        'highest_bid': highest_bid,
+        'comments': comments,
+    }
+    return render(request, "auctions/auction.html", context=context)
+
+
 def listings(request):
     form = AuctionForm()
 
@@ -184,7 +267,7 @@ def listings(request):
                                    '       listing_price, '+
                                    '       coalesce((select max(bid_current_value) '+
                                    '                   from auctions_bid '+
-                                   '                  where product_id = listing_id),0) as highest_bid '+
+                                   '                  where product_id = listing_id),listing_price) as highest_bid '+
                                    '  from auctions_listing')
             
             highest_bid = 0
@@ -204,7 +287,7 @@ def listings(request):
                                '       listing_price, '+
                                '       coalesce((select max(bid_current_value) '+
                                '                   from auctions_bid '+
-                               '                  where product_id = listing_id),0) as highest_bid, '+
+                               '                  where product_id = listing_id),listing_price) as highest_bid, '+
                                '       coalesce((select user_id '+ 
                                '                   from (select user_id, max(bid_current_value) from auctions_bid where product_id = listing_id)),0) as winner '+
                                '  from auctions_listing')

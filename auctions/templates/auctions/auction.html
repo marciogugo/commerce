@@ -9,19 +9,21 @@
 <script>
     function placeBid(id) {
         document.getElementById("currentId").value = id;
-        document.getElementById("buttonPlaceBid"+id).style.display="none";
+        document.getElementById("divCloseBid"+id).style.display="none";
+        {% comment %} document.getElementById("buttonPlaceBid"+id).style.display="none"; {% endcomment %}
         document.getElementById("divPlaceBid"+id).style.display="";
     }
 
     function cancelBid(id) { 
-        document.getElementById('currentId').value = 0;
-        document.getElementById("buttonPlaceBid"+id).style.display="";
+        document.getElementById("divCloseBid"+id).style.display="";
+        {% comment %} document.getElementById("buttonPlaceBid"+id).style.display=""; {% endcomment %}
         document.getElementById("divPlaceBid"+id).style.display="none";
     }
 
     function submitBid(id) { 
         document.getElementById("currentId").value = id;
-        document.getElementById("buttonPlaceBid"+id).style.display="none";
+        document.getElementById("divCloseBid"+id).style.display="";
+        {% comment %} document.getElementById("buttonPlaceBid"+id).style.display="none"; {% endcomment %}
         document.getElementById("divPlaceBid"+id).style.display="";
 
         priorBid = document.getElementById("priorBid"+id).value;
@@ -62,67 +64,69 @@
         {% csrf_token %}
         <input type="hidden" id="currentId" name="currentId" value="0">
         <div class="row">
-            {% for listing in listings|columns:3 %}
+            {% comment %} {% for listing in listings|columns:1 %} {% endcomment %}
             <div class="col-md-4">
-                {% for item in listing %}
-                    {% comment %} <div class="item-watchlist">
+                {% comment %} {% for item in listing %} {% endcomment %}
+                    <div class="item-watchlist">
                         {% if user.is_authenticated %}
                             {% update_variable False as is_bookmarked %}
                             {% for bookmark in bookmarks %}
-                                {% if bookmark.product_id == item.listing_id %}
+                                {% if bookmark.product_id == listing.listing_id %}
                                     {% update_variable True as is_bookmarked %}
                                 {% endif %}
 
                                 {% if forloop.last %}
                                     {% if is_bookmarked %}
-                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "remove_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9829;</span></button>
+                                        <button type="button" id="button_watchlist_{{ listing.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "remove_watchlist" %}?product_id={{ listing.listing_id }}'"><span>&#9829;</span></button>
                                     {% else %}
-                                        <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
+                                        <button type="button" id="button_watchlist_{{ listing.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ listing.listing_id }}'"><span>&#9825;</span></button>
                                     {% endif %}
                                 {% endif %}
                             {% empty %}
-                                <button type="button" id="button_watchlist_{{ item.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ item.listing_id }}'"><span>&#9825;</span></button>
+                                <button type="button" id="button_watchlist_{{ listing.listing_id }}" class="btn btn-outline-dark" name="add_bookmark" onclick="location.href='{% url "add_watchlist" %}?product_id={{ listing.listing_id }}'"><span>&#9825;</span></button>
                             {% endfor %}
                         {% endif %}
-                    </div> {% endcomment %}
+                    </div>
 
-                    <div class="item-images" onclick="location.href='{% url "redirect_auction" %}?product_id={{ item.listing_id }}'">
-                        <img class="item-image" src="{{ MEDIA_URL }}{{item.listing_image_file}}" width=300 height=300/>
+                    <div class="item-images">
+                        <img class="item-image" src="{{ MEDIA_URL }}{{listing.listing_image_file}}" width=300 height=300/>
                     </div>
 
                     <hr>
                     
-                    {% comment %} <div class="col-sm-10">
+                    <div class="col-sm-10">
                         <label for="listingCategory" class="col-sm2 col-form-label col-form-label-sm">Category:</label>
-                        {{ item.listing_category }}
-                    </div> {% endcomment %}
+                        {{ listing.listing_category }}
+                    </div>
 
                     <div class="col-sm-10">
                         <label for="listingTitle" class="col-sm2 col-form-label col-form-label-sm">Title:</label>
-                        {{ item.listing_title }}
+                        {{ listing.listing_title }}
                     </div>
 
                     <div class="col-sm-10">
                         <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Price: US$</label>
-                        {{ item.listing_price }}
+                        US${{ listing.listing_price }}
                     </div>
 
                     <div class="col-sm-10">
                         <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Content:</label>
-                        {{ item.listing_content }}
+                        {{ listing.listing_content }}
                     </div>
 
-                    {% comment %} {% if user.is_authenticated %}
-                        {% if item.listing_finished != 'S' %}
-                            <button type="button" id="buttonPlaceBid{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid({{ item.listing_id }});">Place Bid</button>
-                        {% endif %}
-                        {% if user.id == item.user_id and item.listing_finished != 'S' %}
-                            <button type="button" id="buttonClose{{ item.listing_id }}"  class="btn btn-primary mt-3" onclick="closeBid({{ item.listing_id }});">Close Bid</button>
-                        {% endif %}
+                    {% if user.is_authenticated %}
+                        <div id="divCloseBid{{ listing.listing_id}}" style="display:True">
+                            {% if listing.listing_finished != 'S' %}
+                                <button type="button" id="buttonPlaceBid{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid({{ listing.listing_id }});">Place Bid</button>
+                            {% endif %}
+                            {% if user.id == listing.user_id and listing.listing_finished != 'S' %}
+                                <button type="button" id="buttonClose{{ listing.listing_id }}"  class="btn btn-primary mt-3" onclick="closeBid({{ listing.listing_id }});">Close Bide</button>
+                            {% endif %}
+                        </div>
 
                         {% for bid in bids %}
-                            {% if bid.id == item.listing_id %}
-                                {% if user.id == bid.winner %}
+                            {% if bid.id == listing.listing_id %}
+                                {% if user.id == bid.winner and listing.listing_finished == True %}
                                     <div class="col-sm-10">
                                         <div class="winner-message">
                                             You're the current winner!
@@ -132,49 +136,49 @@
                             {% endif %}
                         {% endfor %}
 
-                        <div class="input-group-sm" id="divPlaceBid{{ item.listing_id }}" style="display:none">
+                        <div class="input-group-sm" id="divPlaceBid{{ listing.listing_id }}" style="display:none">
                             {% for bid in bids %}
-                                {% if bid.id == item.listing_id %}
+                                {% if bid.id == listing.listing_id %}
                                     {% if bid.highest_bid == 0 %}
-                                        {% update_variable item.listing_price as highest_bid %}
-                                        <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thighest_bid }}">
-                                        <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thighest_bid }}">
+                                        {% update_variable listing.listing_price as thighest_bid %}
+                                        <input type="hidden" id="priorBid{{ listing.listing_id }}" name="priorBid{{ listing.listing_id }}" value="{{ thighest_bid }}">
+                                        <input type="hidden" id="currentBid{{ listing.listing_id }}" name="currentBid{{ listing.listing_id }}" value="{{ thighest_bid }}">
                                         <div class="col-sm-10">
                                             <div class="input-group" style="width:300px;">
                                                 <span class="col-sm2 col-form-label col-form-label-sm input-group-addon">Max Bid:</span>
-                                                <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step="10" style="width:150px; height:30px;" class="form-control" value="{{ thighest_bid }}">
+                                                <input id="bidValue{{ listing.listing_id }}" type="number" min="{{ thighest_bid }}" step=".10" style="width:150px; height:30px;" class="form-control" value="{{ thighest_bid }}">
                                             </div>
                                         </div>
-                                        {% update_variable item.listing_price as thehighest_bid %}
+                                        {% update_variable listing.listing_price as thehighest_bid %}
                                     {% else %}
                                         {% update_variable bid.highest_bid as thehighest_bid %}
-                                        <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
-                                        <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
+                                        <input type="hidden" id="priorBid{{ listing.listing_id }}" name="priorBid{{ listing.listing_id }}" value="{{ thehighest_bid }}">
+                                        <input type="hidden" id="currentBid{{ listing.listing_id }}" name="currentBid{{ listing.listing_id }}" value="{{ thehighest_bid }}">
                                         <div class="col-sm-10">
                                             <div class="input-group" style="width:300px;">
                                                 <span class="col-sm2 col-form-label col-form-label-sm input-group-addon">Max Bid:</span>
-                                                <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thighest_bid }}" step="10" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
+                                                <input id="bidValue{{ listing.listing_id }}" type="number" min="{{ thighest_bid }}" step=".10" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
                                             </div>
                                         </div>
                                     {% endif %}
                                 {% endif %}
                             {% empty %}
-                                {% update_variable item.listing_price as thehighest_bid %}
-                                <input type="hidden" id="priorBid{{ item.listing_id }}" name="priorBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
-                                <input type="hidden" id="currentBid{{ item.listing_id }}" name="currentBid{{ item.listing_id }}" value="{{ thehighest_bid }}">
+                                {% update_variable listing.listing_price as thehighest_bid %}
+                                <input type="hidden" id="priorBid{{ listing.listing_id }}" name="priorBid{{ listing.listing_id }}" value="{{ thehighest_bid }}">
+                                <input type="hidden" id="currentBid{{ listing.listing_id }}" name="currentBid{{ listing.listing_id }}" value="{{ thehighest_bid }}">
 
                                 <div class="col-sm-10">
                                     <div class="input-group" style="width:300px;">
                                         <span class="col-sm2 col-form-label col-form-label-sm input-group-addon">Max Bid:</span>
-                                        <input id="bidValue{{ item.listing_id }}" type="number" min="{{ thehighest_bid }}" step="10" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
+                                        <input id="bidValue{{ listing.listing_id }}" type="number" min="{{ thehighest_bid }}" step=".10" style="width:150px; height:30px;" class="form-control" value="{{ thehighest_bid }}">
                                     </div>
                                 </div>
                             {% endfor %}
 
-                            <button type="submit" id="buttonSubmit{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ item.listing_id }});">Place Bid</button>
-                            <button type="button" id="buttonCancel{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="cancelBid({{ item.listing_id }});">Cancel</button>
+                            <button type="submit" id="buttonSubmit{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="submitBid({{ listing.listing_id }});">Place Bid</button>
+                            <button type="button" id="buttonCancel{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="cancelBid({{ listing.listing_id }});">Cancel</button>
                         </div>
-                    {% endif %} {% endcomment %}
+                    {% endif %} 
 
                     <hr>
 
@@ -189,13 +193,13 @@
                                 <button type="submit" id="buttonSubmitComment{{ item.listing_id }}" class="btn btn-primary mt-3" onclick="submitComment({{ item.listing_id }});">Add comment</button>
                             {% endif %}
                         {% endfor %}
-                    </form> {% endcomment %}
+                    </form>{% endcomment %}
 
-                {% endfor %} <!-- for listing in listings --!>
+                {% comment %} {% endfor %} <!-- for listing in listings --!> {% endcomment %}
             </div><!-- /col-md-4 -->
-        {% empty %}
+        {% comment %} {% empty %}
             <div class="error-message">Sorry, no active listings found.</div>
-        {% endfor %}
+        {% endfor %} {% endcomment %}
         </div><!-- /row -->
         {% if message %}
             <div class="error-message">{{ message }}</div>
