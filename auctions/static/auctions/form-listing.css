@@ -46,3 +46,8 @@
     display: flex;
     border: 3px solid lightblue;
 }
+
+.item-comments{
+    display: flex;
+    align-content: flex-end;
+}

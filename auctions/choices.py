@@ -44,7 +44,7 @@ CATEGORY_CHOICES = (
     ),
 )
 
-BID_CHOICES = (
+YESNO_CHOICES = (
     ("Y","Yes"),
     ("N","No")
 )

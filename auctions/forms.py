@@ -114,11 +114,18 @@ class ListingForm(forms.Form):
         widget=forms.ClearableFileInput(attrs={
             'id':'formFile',
             'class':'form-control',
-            # 'max-width':'50%',
-            # 'height':'50%',
             'type': 'file',
             'onchange':'preview()',
             'required':'false',
+        }),
+        required=False,
+    )
+
+    listingComment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
         }),
         required=False,
     )
@@ -157,6 +164,15 @@ class AuctionForm(forms.Form):
             'class':'form-control',
             'type': 'file',
             'required':'false',
+        }),
+        required=False,
+    )
+
+    auctionComment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
         }),
         required=False,
     )
