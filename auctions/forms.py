@@ -121,6 +121,15 @@ class ListingForm(forms.Form):
         required=False,
     )
 
+    listingComment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
+        }),
+        required=False,
+    )
+
 class AuctionForm(forms.Form):
     auctionTitle = forms.CharField(
         widget=forms.TextInput(attrs={
@@ -155,6 +164,15 @@ class AuctionForm(forms.Form):
             'class':'form-control',
             'type': 'file',
             'required':'false',
+        }),
+        required=False,
+    )
+
+    auctionComment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control form-control-sm',
+            'rows': '3',
+            'columns': '100',
         }),
         required=False,
     )

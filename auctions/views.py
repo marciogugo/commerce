@@ -193,7 +193,12 @@ def redirect_auction(request):
 
             comments = Comment.objects.all()
     else:
-        listing = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
+        listing  = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
+        comments = Comment.objects.filter(product=request.GET.get('product_id'))
+
+        print('0 ', request.GET.get('product_id'))
+        print('1 ', listing)
+        print('2 ', comments.values('comment_content'))
 
         if 'user_id' in request.session:
             bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
@@ -212,8 +217,6 @@ def redirect_auction(request):
                                '  from auctions_listing')
 
         highest_bid = 0
-
-        comments = Comment.objects.all()
     context= {
         'form': form,
         'listing': listing,
@@ -245,16 +248,17 @@ def listings(request):
             listing = Listing.objects.get(listing_id = listingId)
             user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
 
-            if listingBid != '-1':
-                bid = Bid()
-                bid.user = user
-                bid.product = listing
-                bid.bid_current_value = listingBid
-                bid.bid_finished = 'N'
-                bid.save()
-            else:
-                listing.listing_finished = 'S'
-                listing.save()
+            if request.POST['addComments'] == 'False':
+                if listingBid != '-1':
+                    bid = Bid()
+                    bid.user = user
+                    bid.product = listing
+                    bid.bid_current_value = listingBid
+                    bid.bid_finished = 'N'
+                    bid.save()
+                else:
+                    listing.listing_finished = 'S'
+                    listing.save()
 
             listings = Listing.objects.values()
 
@@ -263,13 +267,20 @@ def listings(request):
             else:
                 bookmarks = Watchlist.objects.values()
 
+            if request.POST['addComments'] == 'True':
+                comment = Comment()
+                comment.user = user
+                comment.product = listing
+                comment.comment_content = request.POST['itemComment']
+                comment.save()
+
             bids = Bid.objects.raw('select listing_id as id, '+
-                                   '       listing_price, '+
-                                   '       coalesce((select max(bid_current_value) '+
-                                   '                   from auctions_bid '+
-                                   '                  where product_id = listing_id),listing_price) as highest_bid '+
-                                   '  from auctions_listing')
-            
+                                '       listing_price, '+
+                                '       coalesce((select max(bid_current_value) '+
+                                '                   from auctions_bid '+
+                                '                  where product_id = listing_id),listing_price) as highest_bid '+
+                                '  from auctions_listing')
+        
             highest_bid = 0
 
             comments = Comment.objects.all()
