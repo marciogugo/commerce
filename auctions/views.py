@@ -11,7 +11,7 @@ from django.utils import timezone
 from auctions.choices import CATEGORY_CHOICES
 
 from .models import User, Listing, Watchlist, Bid, Comment
-from .forms import ListingForm, RegisterForm, AuctionForm, CommentsForm, CategoriesForm
+from .forms import ListingForm, RegisterForm, AuctionForm, CategoriesForm
 
 from django.db.models import Max
 from django.db.models import F, Q, Value
@@ -83,6 +83,7 @@ def register(request):
                                                 email=email, 
                                                 password=password)
                 user.save()
+                request.session['user_id'] = user.id
             except IntegrityError:
                 context = {
                     'form': form,
@@ -149,56 +150,53 @@ def redirect_auction(request):
     form = AuctionForm()
 
     if request.method == 'POST':
-        print("entrou post")
-        print("nem vai precisar do post")
-        form = AuctionForm(request.POST)
+        pass
+        # print("entrou post")
+        # print("nem vai precisar do post")
+        # form = AuctionForm(request.POST)
 
-        if not form.is_valid():
-            return render(request, "auctions/index.html", {
-                "message": "Fill out the requested bid value."
-            })
-        else:
-            listingId  = request.POST['currentId']
-            listingBid = request.POST['currentBid'+listingId]
+        # if not form.is_valid():
+        #     return render(request, "auctions/index.html", {
+        #         "message": "Fill out the requested bid value."
+        #     })
+        # else:
+        #     listingId  = request.POST['currentId']
+        #     listingBid = request.POST['currentBid'+listingId]
 
-            listing = Listing.objects.get(listing_id = listingId)
-            user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
+        #     listing = Listing.objects.get(listing_id = listingId)
+        #     user = get_object_or_404(User.objects.filter(pk=request.session['user_id']))
 
-            if listingBid != '-1':
-                bid = Bid()
-                bid.user = user
-                bid.product = listing
-                bid.bid_current_value = listingBid
-                bid.bid_finished = 'N'
-                bid.save()
-            else:
-                listing.listing_finished = 'S'
-                listing.save()
+        #     if listingBid != '-1':
+        #         bid = Bid()
+        #         bid.user = user
+        #         bid.product = listing
+        #         bid.bid_current_value = listingBid
+        #         bid.bid_finished = 'N'
+        #         bid.save()
+        #     else:
+        #         listing.listing_finished = 'S'
+        #         listing.save()
 
-            listings = Listing.objects.values()
+        #     listings = Listing.objects.values()
 
-            if 'user_id' in request.session:
-                bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
-            else:
-                bookmarks = Watchlist.objects.values()
+        #     if 'user_id' in request.session:
+        #         bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
+        #     else:
+        #         bookmarks = Watchlist.objects.values()
 
-            bids = Bid.objects.raw('select listing_id as id, '+
-                                   '       listing_price, '+
-                                   '       coalesce((select max(bid_current_value) '+
-                                   '                   from auctions_bid '+
-                                   '                  where product_id = listing_id),listing_price) as highest_bid '+
-                                   '  from auctions_listing')
+        #     bids = Bid.objects.raw('select listing_id as id, '+
+        #                            '       listing_price, '+
+        #                            '       coalesce((select max(bid_current_value) '+
+        #                            '                   from auctions_bid '+
+        #                            '                  where product_id = listing_id),listing_price) as highest_bid '+
+        #                            '  from auctions_listing')
             
-            highest_bid = 0
+        #     highest_bid = 0
 
-            comments = Comment.objects.all()
+        #     comments = Comment.objects.all()
     else:
         listing  = get_object_or_404(Listing.objects.filter(pk=request.GET.get('product_id')))
         comments = Comment.objects.filter(product=request.GET.get('product_id'))
-
-        print('0 ', request.GET.get('product_id'))
-        print('1 ', listing)
-        print('2 ', comments.values('comment_content'))
 
         if 'user_id' in request.session:
             bookmarks = Watchlist.objects.values().filter(user_id=request.session['user_id'])
@@ -318,12 +316,6 @@ def listings(request):
         'comments': comments,
     }
     return render(request, "auctions/index.html", context=context)
-
-
-def comments(request):
-    form = CommentsForm()
-
-    pass
 
 
 @login_required

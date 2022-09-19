@@ -177,24 +177,6 @@ class AuctionForm(forms.Form):
         required=False,
     )
 
-class CommentsForm(forms.Form):
-    commentsCategory = forms.ChoiceField(
-        widget=forms.Select(),  
-        choices = CATEGORY_CHOICES,
-        required=False,
-    )    
-
-    commentsContent = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'form-control form-control-sm',
-            'rows': '3',
-            'columns': '100',
-        }),
-        required=False,
-    )
-
-#CommentsFormset = inlineformset_factory(Listing, Comments, extra = 1)
-
 class CategoriesForm(forms.Form):
     categoriesCategory = forms.ChoiceField(
         widget=forms.Select(attrs={'onchange':'loadListing()'}),

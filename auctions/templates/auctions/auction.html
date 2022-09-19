@@ -137,7 +137,8 @@
 
                     {% for bid in bids %}
                         {% if bid.id == listing.listing_id %}
-                            {% if user.id == bid.winner and listing.listing_finished == True %}
+                        dsdsds
+                            {% if user.id == bid.winner and listing.listing_finished == 'S' %}
                                 <div class="col-sm-10">
                                     <div class="winner-message">
                                         You're the current winner!
@@ -197,7 +198,7 @@
 
                 {% for comment in comments %}
                     <div class="item-comments">
-                        <textarea id="itemComment" name="itemComment" rows="2" cols="26">{{ comment.comment_content }}</textarea>
+                        <textarea id="itemComment" name="itemComment" rows="2" cols="26" readonly='True'>{{ comment.comment_content }}</textarea>
                     </div>
                     <br>
                 {% endfor %}
