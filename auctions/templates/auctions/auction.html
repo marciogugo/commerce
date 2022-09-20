@@ -44,12 +44,14 @@
 
         if(currentBid <= priorBid) {
             document.getElementById("buttonSubmit"+id).type = 'button'
+            document.getElementById("divPlaceBid"+id).style.display="None";
             alert("Bid must be greater than " + priorBid);
         }
         else {
             document.getElementById("currentId").value = id;
             document.getElementById("priorBid"+id).innerHTML = document.getElementById("priorBid"+id).value;
             document.getElementById("currentBid"+id).value   = document.getElementById("bidValue"+id).value;
+            document.getElementById("divPlaceBid"+id).style.display="None";
             document.getElementById("buttonSubmit"+id).name  = 'buttonSubmit'+id
             document.getElementById("buttonSubmit"+id).type  = 'submit'
 
@@ -117,7 +119,7 @@
 
                 <div class="col-sm-10">
                     <label for="listingPrice" class="col-sm2 col-form-label col-form-label-sm">Price: US$</label>
-                    US${{ listing.listing_price }}
+                    {{ listing.listing_price }}
                 </div>
 
                 <div class="col-sm-10">
@@ -131,13 +133,12 @@
                             <button type="button" id="buttonPlaceBid{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="placeBid({{ listing.listing_id }});">Place Bid</button>
                         {% endif %}
                         {% if user.id == listing.user_id and listing.listing_finished != 'S' %}
-                            <button type="button" id="buttonClose{{ listing.listing_id }}"  class="btn btn-primary mt-3" onclick="closeBid({{ listing.listing_id }});">Close Bide</button>
+                            <button type="button" id="buttonClose{{ listing.listing_id }}"  class="btn btn-primary mt-3" onclick="closeBid({{ listing.listing_id }});">Close Bid</button>
                         {% endif %}
                     </div>
 
                     {% for bid in bids %}
                         {% if bid.id == listing.listing_id %}
-                        dsdsds
                             {% if user.id == bid.winner and listing.listing_finished == 'S' %}
                                 <div class="col-sm-10">
                                     <div class="winner-message">
@@ -208,7 +209,9 @@
                     <button type="button" id="buttonPlaceComment{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="saveComment({{ listing.listing_id }});">Save comment</button>
                 </div>
 
-                <button type="button" id="buttonAddComment{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="addComment({{ listing.listing_id }});">Add comment</button>
+                {% if user.is_authenticated %}
+                    <button type="button" id="buttonAddComment{{ listing.listing_id }}" class="btn btn-primary mt-3" onclick="addComment({{ listing.listing_id }});">Add comment</button>
+                {% endif %} 
 
             </div><!-- /col-md-4 -->
         </div><!-- /row -->

@@ -393,7 +393,7 @@ def categories(request):
         form = CategoriesForm(request.POST)
 
         if 'categoriesCategory' in request.POST:
-            if request.POST['categoriesCategory'] == '':
+            if request.POST['categoriesCategory'] == '-Empty-':
                 listings = Listing.objects.values()
             else:
                 listings = Listing.objects.values().filter(listing_category = request.POST['categoriesCategory'])
